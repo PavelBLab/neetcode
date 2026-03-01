@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Longest Repeating Character Replacement</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0f1117; color: #e0e0e0; font-family: 'Courier New', monospace; padding: 30px; min-height: 100vh; }
+  h1 { color: #7eb8f7; font-size: 1.2rem; margin-bottom: 6px; }
+  .subtitle { color: #666; font-size: 0.85rem; margin-bottom: 24px; }
+
+  /* Input controls */
+  .controls-top { display: flex; gap: 12px; align-items: center; margin-bottom: 28px; flex-wrap: wrap; }
+  .controls-top label { color: #aaa; font-size: 0.85rem; }
+  .controls-top input { background: #1e2130; border: 1px solid #333; color: #e0e0e0; padding: 6px 10px; font-family: monospace; font-size: 0.95rem; border-radius: 4px; width: 160px; }
+  .controls-top input[type=number] { width: 60px; }
+  .btn-run { background: #2a4a7f; border: 1px solid #4a7abf; color: #7eb8f7; padding: 6px 16px; border-radius: 4px; cursor: pointer; font-family: monospace; font-size: 0.9rem; }
+  .btn-run:hover { background: #3a5a9f; }
+
+  /* Array cells */
+  .array-section { margin-bottom: 32px; }
+  .array-label { color: #888; font-size: 0.8rem; margin-bottom: 10px; letter-spacing: 1px; }
+  .array-wrapper { position: relative; padding-bottom: 48px; }
+  .array-row { display: flex; gap: 6px; }
+  .cell {
+    width: 52px; height: 52px; display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; font-weight: bold; border-radius: 6px; border: 2px solid transparent;
+    transition: background 0.25s, border-color 0.25s;
+    position: relative;
+  }
+  .cell.outside  { background: #1a1d27; border-color: #2a2d3a; color: #444; }
+  .cell.in-window { background: #1a3a1a; border-color: #2a6a2a; color: #7edf7e; }
+  .cell.max-freq  { background: #1a3a1a; border-color: #4adf4a; color: #aafaaa; }
+  .cell.replaced  { background: #3a3010; border-color: #aaaa30; color: #ffff88; }
+  .cell.shrinking { background: #3a1010; border-color: #df4a4a; color: #ff9999; }
+  .cell.new-right { background: #102a3a; border-color: #4aaadf; color: #88ddff; }
+
+  /* Pointers */
+  .pointers-row { display: flex; gap: 6px; position: absolute; bottom: 0; left: 0; }
+  .pointer-slot { width: 52px; display: flex; justify-content: center; gap: 3px; }
+  .ptr { font-size: 0.75rem; font-weight: bold; padding: 2px 5px; border-radius: 3px; }
+  .ptr.L { background: #df4a4a; color: #fff; }
+  .ptr.R { background: #4aaadf; color: #fff; }
+
+  /* Panels */
+  .panels { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+  .panel { background: #161921; border: 1px solid #252836; border-radius: 8px; padding: 16px; }
+  .panel-title { font-size: 0.75rem; color: #666; letter-spacing: 1px; margin-bottom: 12px; text-transform: uppercase; }
+  .var-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 0.9rem; }
+  .var-name { color: #aaa; }
+  .var-val { color: #7eb8f7; font-weight: bold; }
+  .var-val.highlight { color: #ffdd55; }
+
+  /* Count map */
+  .count-map { display: flex; gap: 8px; flex-wrap: wrap; }
+  .count-entry { background: #1e2130; border: 1px solid #333; border-radius: 4px; padding: 4px 10px; font-size: 0.85rem; }
+  .count-entry span { color: #7edf7e; font-weight: bold; }
+  .count-entry.active { border-color: #4adf4a; }
+
+  /* Equation panel */
+  .equation-box { background: #161921; border: 1px solid #252836; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+  .equation { font-size: 1rem; color: #ccc; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .eq-part { padding: 4px 8px; border-radius: 4px; }
+  .eq-label { color: #888; font-size: 0.8rem; }
+  .eq-num { color: #7eb8f7; font-weight: bold; }
+  .eq-op { color: #aaa; }
+  .eq-pass { color: #4adf4a; font-size: 1.2rem; font-weight: bold; }
+  .eq-fail { color: #df4a4a; font-size: 1.2rem; font-weight: bold; }
+  .eq-skip { color: #666; }
+
+  /* Narration */
+  .narration { background: #161921; border: 1px solid #252836; border-radius: 8px; padding: 16px; margin-bottom: 20px; font-size: 0.92rem; line-height: 1.7; min-height: 60px; }
+  .kw-expand { color: #4aaadf; font-weight: bold; }
+  .kw-shrink { color: #df4a4a; font-weight: bold; }
+  .kw-update { color: #4adf4a; font-weight: bold; }
+  .kw-char   { color: #ffdd55; font-weight: bold; }
+  .kw-num    { color: #ff9966; font-weight: bold; }
+  .kw-valid  { color: #4adf4a; font-weight: bold; }
+  .kw-invalid{ color: #df4a4a; font-weight: bold; }
+
+  /* Navigation */
+  .nav { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .btn { background: #1e2130; border: 1px solid #333; color: #ccc; padding: 8px 18px; border-radius: 5px; cursor: pointer; font-family: monospace; font-size: 0.9rem; transition: background 0.15s; }
+  .btn:hover { background: #2a2d3a; }
+  .btn:disabled { opacity: 0.3; cursor: default; }
+  .btn.play { background: #1a3a1a; border-color: #2a6a2a; color: #7edf7e; }
+  .btn.play:hover { background: #1e4a1e; }
+  .step-counter { color: #666; font-size: 0.85rem; }
+  .phase-badge { padding: 4px 10px; border-radius: 12px; font-size: 0.78rem; font-weight: bold; letter-spacing: 0.5px; }
+  .phase-expand { background: #102a3a; color: #4aaadf; border: 1px solid #4aaadf44; }
+  .phase-check  { background: #2a2010; color: #ffdd55; border: 1px solid #ffdd5544; }
+  .phase-shrink { background: #2a1010; color: #df4a4a; border: 1px solid #df4a4a44; }
+  .phase-update { background: #102010; color: #4adf4a; border: 1px solid #4adf4a44; }
+  .phase-done   { background: #1a1a2a; color: #9988ff; border: 1px solid #9988ff44; }
+
+  /* Legend */
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 24px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.78rem; color: #999; }
+  .legend-dot { width: 14px; height: 14px; border-radius: 3px; border: 2px solid; }
+  .ld-outside  { background: #1a1d27; border-color: #2a2d3a; }
+  .ld-window   { background: #1a3a1a; border-color: #2a6a2a; }
+  .ld-maxfreq  { background: #1a3a1a; border-color: #4adf4a; }
+  .ld-replaced { background: #3a3010; border-color: #aaaa30; }
+  .ld-shrink   { background: #3a1010; border-color: #df4a4a; }
+  .ld-newright { background: #102a3a; border-color: #4aaadf; }
+</style>
+</head>
+<body>
+
+<h1>Longest Repeating Character Replacement</h1>
+<div class="subtitle">Sliding window — replace at most k characters to get the longest uniform substring</div>
+
+<div class="controls-top">
+  <label>String: <input type="text" id="inputStr" value="AAABABB"></label>
+  <label>k: <input type="number" id="inputK" value="1" min="0"></label>
+  <button class="btn-run" onclick="init()">Run</button>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot ld-outside"></div> Outside window</div>
+  <div class="legend-item"><div class="legend-dot ld-newright"></div> Newly added (right)</div>
+  <div class="legend-item"><div class="legend-dot ld-maxfreq"></div> Most frequent char</div>
+  <div class="legend-item"><div class="legend-dot ld-window"></div> In window</div>
+  <div class="legend-item"><div class="legend-dot ld-replaced"></div> To be replaced</div>
+  <div class="legend-item"><div class="legend-dot ld-shrink"></div> Being removed (left)</div>
+</div>
+
+<div class="array-section">
+  <div class="array-label">STRING</div>
+  <div class="array-wrapper">
+    <div class="array-row" id="arrayRow"></div>
+    <div class="pointers-row" id="pointersRow"></div>
+  </div>
+</div>
+
+<div class="equation-box">
+  <div class="eq-label" style="margin-bottom:8px">CONDITION CHECK</div>
+  <div class="equation" id="equation">—</div>
+</div>
+
+<div class="narration" id="narration">Press Play or Next to start.</div>
+
+<div class="panels">
+  <div class="panel">
+    <div class="panel-title">Variables</div>
+    <div class="var-row"><span class="var-name">left</span><span class="var-val" id="vLeft">0</span></div>
+    <div class="var-row"><span class="var-name">right</span><span class="var-val" id="vRight">—</span></div>
+    <div class="var-row"><span class="var-name">maxFreq</span><span class="var-val" id="vMaxFreq">0</span></div>
+    <div class="var-row"><span class="var-name">windowSize</span><span class="var-val" id="vWindowSize">—</span></div>
+    <div class="var-row"><span class="var-name">replacements needed</span><span class="var-val" id="vReplace">—</span></div>
+    <div class="var-row"><span class="var-name">result</span><span class="var-val" id="vResult">0</span></div>
+  </div>
+  <div class="panel">
+    <div class="panel-title">Count Map (char → frequency)</div>
+    <div class="count-map" id="countMap">—</div>
+  </div>
+</div>
+
+<div class="nav">
+  <button class="btn" id="btnPrev" onclick="prev()">◀ Prev</button>
+  <button class="btn play" id="btnPlay" onclick="togglePlay()">▶ Play</button>
+  <button class="btn" id="btnNext" onclick="next()">Next ▶</button>
+  <span class="step-counter" id="stepCounter">Step 0 / 0</span>
+  <span id="phaseBadge"></span>
+</div>
+
+<script>
+let steps = [];
+let idx = 0;
+let playTimer = null;
+
+function computeSteps(s, k) {
+  const out = [];
+  const count = {};
+  let left = 0, maxFreq = 0, result = 0;
+
+  const snap = (phase, right, narration, extra = {}) => {
+    out.push({
+      phase,
+      left,
+      right,
+      maxFreq,
+      result,
+      count: { ...count },
+      narration,
+      windowSize: right >= 0 ? right - left + 1 : 0,
+      ...extra
+    });
+  };
+
+  snap('start', -1, 'Algorithm starts. <span class="kw-update">left = 0</span>, <span class="kw-update">maxFreq = 0</span>, <span class="kw-update">result = 0</span>. Ready to expand the window.');
+
+  for (let right = 0; right < s.length; right++) {
+    const ch = s[right];
+
+    // Expand
+    count[ch] = (count[ch] || 0) + 1;
+    const newFreq = count[ch];
+    const prevMaxFreq = maxFreq;
+    maxFreq = Math.max(maxFreq, newFreq);
+    snap('expand', right,
+      `<span class="kw-expand">Expand right</span> → add <span class="kw-char">'${ch}'</span> to window. ` +
+      `count[<span class="kw-char">'${ch}'</span>] = <span class="kw-num">${newFreq}</span>. ` +
+      (maxFreq > prevMaxFreq ? `maxFreq updated to <span class="kw-num">${maxFreq}</span>.` : `maxFreq stays at <span class="kw-num">${maxFreq}</span>.`),
+      { newRight: right }
+    );
+
+    // Check condition
+    const windowSize = right - left + 1;
+    const replacementsNeeded = windowSize - maxFreq;
+    const invalid = replacementsNeeded > k;
+    snap('check', right,
+      `Check: windowSize(<span class="kw-num">${windowSize}</span>) − maxFreq(<span class="kw-num">${maxFreq}</span>) = <span class="kw-num">${replacementsNeeded}</span> replacements needed. ` +
+      (invalid
+        ? `<span class="kw-num">${replacementsNeeded}</span> &gt; k(<span class="kw-num">${k}</span>) → <span class="kw-invalid">INVALID</span> — must shrink window.`
+        : `<span class="kw-num">${replacementsNeeded}</span> ≤ k(<span class="kw-num">${k}</span>) → <span class="kw-valid">VALID</span> — window is fine.`),
+      { checkInvalid: invalid, replacementsNeeded, windowSize }
+    );
+
+    if (invalid) {
+      const removedCh = s[left];
+      count[removedCh]--;
+      const oldLeft = left;
+      left++;
+      snap('shrink', right,
+        `<span class="kw-shrink">Shrink left</span> → remove <span class="kw-char">'${removedCh}'</span> at index <span class="kw-num">${oldLeft}</span>. ` +
+        `count[<span class="kw-char">'${removedCh}'</span>] = <span class="kw-num">${count[removedCh]}</span>. left moves to <span class="kw-num">${left}</span>.`,
+        { shrinkIdx: oldLeft }
+      );
+    }
+
+    const newResult = right - left + 1;
+    const prevResult = result;
+    result = Math.max(result, newResult);
+    snap('update', right,
+      `<span class="kw-update">Update result</span>: window size = <span class="kw-num">${newResult}</span>. ` +
+      (result > prevResult
+        ? `New best! result = <span class="kw-num">${result}</span>.`
+        : `result stays at <span class="kw-num">${result}</span>.`)
+    );
+  }
+
+  snap('done', s.length - 1,
+    `<span class="kw-update">Done!</span> The longest substring with at most <span class="kw-num">${k}</span> replacement(s) has length <span class="kw-num">${result}</span>.`
+  );
+
+  return out;
+}
+
+function renderStep() {
+  const s = document.getElementById('inputStr').value.toUpperCase();
+  const step = steps[idx];
+  const n = s.length;
+
+  // Array cells
+  const arrayRow = document.getElementById('arrayRow');
+  arrayRow.innerHTML = '';
+  for (let i = 0; i < n; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'cell';
+    cell.textContent = s[i];
+
+    const inWindow = step.right >= 0 && i >= step.left && i <= step.right;
+    if (!inWindow) {
+      cell.classList.add('outside');
+    } else if (step.shrinkIdx === i) {
+      cell.classList.add('shrinking');
+    } else if (step.newRight === i && step.phase === 'expand') {
+      cell.classList.add('new-right');
+    } else {
+      // figure out if this char is the maxFreq char
+      const charCount = step.count[s[i]] || 0;
+      const isMaxFreqChar = charCount === step.maxFreq && step.maxFreq > 0;
+      if (step.phase === 'check' && step.checkInvalid) {
+        // mark non-dominant chars as "to replace"
+        const dominantChar = Object.entries(step.count).sort((a,b)=>b[1]-a[1])[0]?.[0];
+        cell.classList.add(s[i] === dominantChar ? 'max-freq' : 'replaced');
+      } else {
+        cell.classList.add(isMaxFreqChar ? 'max-freq' : 'in-window');
+      }
+    }
+    arrayRow.appendChild(cell);
+  }
+
+  // Pointers
+  const pointersRow = document.getElementById('pointersRow');
+  pointersRow.innerHTML = '';
+  for (let i = 0; i < n; i++) {
+    const slot = document.createElement('div');
+    slot.className = 'pointer-slot';
+    if (i === step.left && step.right >= 0) {
+      const p = document.createElement('span');
+      p.className = 'ptr L'; p.textContent = 'L';
+      slot.appendChild(p);
+    }
+    if (i === step.right && step.right >= 0) {
+      const p = document.createElement('span');
+      p.className = 'ptr R'; p.textContent = 'R';
+      slot.appendChild(p);
+    }
+    pointersRow.appendChild(slot);
+  }
+
+  // Variables
+  document.getElementById('vLeft').textContent = step.left;
+  document.getElementById('vRight').textContent = step.right >= 0 ? step.right : '—';
+  document.getElementById('vMaxFreq').textContent = step.maxFreq;
+  document.getElementById('vWindowSize').textContent = step.right >= 0 ? step.windowSize : '—';
+  const rep = step.replacementsNeeded !== undefined ? step.replacementsNeeded : (step.right >= 0 ? step.windowSize - step.maxFreq : '—');
+  const repEl = document.getElementById('vReplace');
+  repEl.textContent = rep;
+  repEl.className = 'var-val' + (step.checkInvalid ? ' highlight' : '');
+  document.getElementById('vResult').textContent = step.result;
+
+  // Count map
+  const mapEl = document.getElementById('countMap');
+  const entries = Object.entries(step.count).filter(([,v]) => v > 0);
+  if (entries.length === 0) {
+    mapEl.innerHTML = '<span style="color:#444">empty</span>';
+  } else {
+    mapEl.innerHTML = entries.map(([ch, v]) => {
+      const dominant = Object.entries(step.count).sort((a,b)=>b[1]-a[1])[0]?.[0];
+      return `<div class="count-entry ${ch === dominant ? 'active' : ''}">${ch}: <span>${v}</span></div>`;
+    }).join('');
+  }
+
+  // Equation
+  const k = parseInt(document.getElementById('inputK').value);
+  const eqEl = document.getElementById('equation');
+  if (step.right < 0 || step.phase === 'start' || step.phase === 'done') {
+    eqEl.innerHTML = '<span class="eq-skip">windowSize − maxFreq ≤ k</span>';
+  } else {
+    const ws = step.windowSize;
+    const mf = step.maxFreq;
+    const rn = ws - mf;
+    const pass = rn <= k;
+    eqEl.innerHTML =
+      `<span class="eq-num">${ws}</span>` +
+      `<span class="eq-op"> − </span>` +
+      `<span class="eq-num">${mf}</span>` +
+      `<span class="eq-op"> = </span>` +
+      `<span class="eq-num">${rn}</span>` +
+      `<span class="eq-op"> ${pass ? '≤' : '>'} k(</span>` +
+      `<span class="eq-num">${k}</span>` +
+      `<span class="eq-op">)</span>` +
+      `  ${pass ? '<span class="eq-pass">✓ VALID</span>' : '<span class="eq-fail">✗ SHRINK</span>'}`;
+  }
+
+  // Narration
+  document.getElementById('narration').innerHTML = step.narration;
+
+  // Phase badge
+  const badges = {
+    start:  ['START',  'phase-done'],
+    expand: ['EXPAND', 'phase-expand'],
+    check:  ['CHECK',  'phase-check'],
+    shrink: ['SHRINK', 'phase-shrink'],
+    update: ['UPDATE', 'phase-update'],
+    done:   ['DONE',   'phase-done'],
+  };
+  const [label, cls] = badges[step.phase] || ['', ''];
+  document.getElementById('phaseBadge').innerHTML = `<span class="phase-badge ${cls}">${label}</span>`;
+
+  // Step counter
+  document.getElementById('stepCounter').textContent = `Step ${idx + 1} / ${steps.length}`;
+
+  // Buttons
+  document.getElementById('btnPrev').disabled = idx === 0;
+  document.getElementById('btnNext').disabled = idx === steps.length - 1;
+}
+
+function init() {
+  const s = document.getElementById('inputStr').value.toUpperCase();
+  const k = parseInt(document.getElementById('inputK').value);
+  document.getElementById('inputStr').value = s;
+  steps = computeSteps(s, k);
+  idx = 0;
+  renderStep();
+}
+
+function next() { if (idx < steps.length - 1) { idx++; renderStep(); } }
+function prev() { if (idx > 0) { idx--; renderStep(); } }
+
+function togglePlay() {
+  if (playTimer) {
+    clearInterval(playTimer);
+    playTimer = null;
+    document.getElementById('btnPlay').textContent = '▶ Play';
+    document.getElementById('btnPlay').className = 'btn play';
+  } else {
+    document.getElementById('btnPlay').textContent = '⏸ Pause';
+    playTimer = setInterval(() => {
+      if (idx < steps.length - 1) { idx++; renderStep(); }
+      else { clearInterval(playTimer); playTimer = null; document.getElementById('btnPlay').textContent = '▶ Play'; }
+    }, 900);
+  }
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') next();
+  if (e.key === 'ArrowLeft')  prev();
+});
+
+init();
+</script>
+</body>
+</html>
