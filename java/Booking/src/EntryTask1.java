@@ -1,24 +1,72 @@
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-public class BookingTask1 {
+public class EntryTask1 {
 
     public static void main(String[] args) {
-        System.out.println(Solution1.conditionForMaximumOccurringCharacter("1223334444"));
-        System.out.println(Solution1.conditionForMaximumOccurringCharacter("abcABCabc"));
-        System.out.println("-----------------------------------------------");
+//        System.out.println(Solution1.conditionForMaximumOccurringCharacter("1223334444"));
+//        System.out.println(Solution1.conditionForMaximumOccurringCharacter("abcABCabc"));
+//        System.out.println("-----------------------------------------------");
 
-        System.out.println(Solution2.conditionForMaximumOccurringCharacter("1223334444"));
-        System.out.println(Solution2.conditionForMaximumOccurringCharacter("abcABCacb"));
-        System.out.println("-----------------------------------------------");
+//        System.out.println(Solution2.conditionForMaximumOccurringCharacter("1223334444"));
+//        System.out.println(Solution2.conditionForMaximumOccurringCharacter("abcABCacb"));
+//        System.out.println("-----------------------------------------------");
 
-        System.out.println(Solution3.conditionForMaximumOccurringCharacter("1223334444"));
-        System.out.println(Solution3.conditionForMaximumOccurringCharacter("abcABCabc"));
+//        System.out.println(Solution3.conditionForMaximumOccurringCharacter("1223334444"));
+//        System.out.println(Solution3.conditionForMaximumOccurringCharacter("abcABCabc"));
+//        System.out.println("-----------------------------------------------");
+
+//        System.out.println(Solution4.conditionForMaximumOccurringCharacter("1223334444"));
+//        System.out.println(Solution4.conditionForMaximumOccurringCharacter("abcABCabc"));
+//        System.out.println("-----------------------------------------------");
+
+        System.out.println(Solution5.conditionForMaximumOccurringCharacter("1223334444"));
+        System.out.println(Solution5.conditionForMaximumOccurringCharacter("abcABCabc"));
         System.out.println("-----------------------------------------------");
 
     }
+
+    static class Solution5 {
+        public static char conditionForMaximumOccurringCharacter(String s) {
+            var sMap = new HashMap<Character, Integer>();
+            var highestFirstOccurance = 0;
+            var result = s.charAt(0);
+
+            for (var i = 0; i < s.length(); i++) {
+                var ch = s.charAt(i);
+                sMap.put(s.charAt(i), sMap.getOrDefault(s.charAt(i), 0) + 1);
+
+                if (highestFirstOccurance < sMap.get(ch)) {
+                    highestFirstOccurance = sMap.get(ch);
+                    result = ch;
+                }
+            }
+
+            return result;
+        }
+    }
+
+    static class Solution4 {
+        public static char conditionForMaximumOccurringCharacter(String s) {
+            var sMap = new HashMap<Character, Integer>();
+
+            for (var i = 0; i < s.length(); i++) {
+                sMap.put(s.charAt(i), sMap.getOrDefault(s.charAt(i), 0) + 1);
+            }
+
+            System.out.println(sMap);
+            return sMap.entrySet().stream()
+                    .sorted(
+                            Comparator.comparingInt((Map.Entry<Character, Integer> e) -> e.getValue())
+                                    .reversed()
+                                    .thenComparing(Map.Entry::getKey)
+                    )
+                    .map(Map.Entry::getKey)
+                    .toList().getFirst();
+        }
+    }
+
 
     static class Solution3 {
         public static char conditionForMaximumOccurringCharacter(String s) {

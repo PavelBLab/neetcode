@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Queue vs Stack Data Structures</title>
+<style>
+*{box-sizing:border-box;margin:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;padding:2rem;background:#fff;color:#1a1a1a}
+.wrap{display:flex;gap:24px;padding:1rem 0}
+.ds{flex:1}
+.ds-title{font-size:16px;font-weight:500;margin:0 0 4px}
+.ds-sub{font-size:12px;color:#666;margin:0 0 12px}
+.items{display:flex;gap:4px;align-items:flex-end;min-height:52px;margin:0 0 12px;padding:8px;border-radius:8px;background:#f5f5f3}
+.item{width:44px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:15px;font-weight:500;transition:all .3s}
+.q-item{background:#E6F1FB;color:#0C447C;border:0.5px solid #85B7EB}
+.s-item{background:#EEEDFE;color:#3C3489;border:0.5px solid #AFA9EC}
+.arrow{font-size:11px;color:#999;margin:0 0 8px;min-height:16px}
+.btns{display:flex;gap:6px;flex-wrap:wrap}
+button{background:transparent;border:0.5px solid #ccc;border-radius:8px;padding:6px 14px;font-size:13px;cursor:pointer;transition:all .2s}
+button:hover{background:#f5f5f3}
+button:active{transform:scale(0.98)}
+.log{font-size:13px;color:#666;min-height:40px;margin:8px 0 0;line-height:1.5}
+.code{font-family:'SF Mono',Menlo,monospace;font-size:12px;color:#185FA5;background:#f5f5f3;padding:2px 6px;border-radius:4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="ds">
+<p class="ds-title">Queue (FIFO)</p>
+<p class="ds-sub">First in, first out</p>
+<div class="arrow" id="q-arrow"></div>
+<div class="items" id="q-items"></div>
+<div class="btns">
+<button onclick="qAdd()">add()</button>
+<button onclick="qPoll()">poll()</button>
+<button onclick="qReset()">Reset</button>
+</div>
+<p class="log" id="q-log">Press add() to enqueue items</p>
+</div>
+<div class="ds">
+<p class="ds-title">Stack (LIFO)</p>
+<p class="ds-sub">Last in, first out</p>
+<div class="arrow" id="s-arrow"></div>
+<div class="items" id="s-items"></div>
+<div class="btns">
+<button onclick="sPush()">push()</button>
+<button onclick="sPop()">pop()</button>
+<button onclick="sReset()">Reset</button>
+</div>
+<p class="log" id="s-log">Press push() to add items</p>
+</div>
+</div>
+<script>
+const letters='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+let qData=[],qIdx=0,sData=[],sIdx=0;
+
+function render(id,data,cls){
+const c=document.getElementById(id);
+c.innerHTML=data.map((v,i)=>`<div class="item ${cls}">${v}</div>`).join('');
+}
+
+function qArrow(){
+const a=document.getElementById('q-arrow');
+if(qData.length===0){a.textContent='';return;}
+if(qData.length===1){a.textContent='front / back';return;}
+let s='';
+for(let i=0;i<qData.length;i++){
+if(i===0)s+='front';
+else if(i===qData.length-1)s+=' '.repeat(Math.max(1,(qData.length-2)*5))+'back';
+else s+='     ';
+}
+a.textContent=s;
+}
+
+function sArrow(){
+const a=document.getElementById('s-arrow');
+if(sData.length===0){a.textContent='';return;}
+let s='';
+for(let i=0;i<sData.length;i++){
+if(i===sData.length-1)s+=' '.repeat(i*5)+'top';
+}
+a.textContent=s;
+}
+
+function qAdd(){
+if(qIdx>=letters.length)return;
+const v=letters[qIdx++];
+qData.push(v);
+render('q-items',qData,'q-item');
+qArrow();
+document.getElementById('q-log').innerHTML=`<span class="code">queue.add("${v}")</span> added to back`;
+}
+
+function qPoll(){
+if(qData.length===0){document.getElementById('q-log').textContent='Queue is empty!';return;}
+const v=qData.shift();
+render('q-items',qData,'q-item');
+qArrow();
+document.getElementById('q-log').innerHTML=`<span class="code">queue.poll()</span> returned "${v}" from front`;
+}
+
+function qReset(){qData=[];qIdx=0;render('q-items',[],'q-item');qArrow();document.getElementById('q-log').textContent='Press add() to enqueue items';}
+
+function sPush(){
+if(sIdx>=letters.length)return;
+const v=letters[sIdx++];
+sData.push(v);
+render('s-items',sData,'s-item');
+sArrow();
+document.getElementById('s-log').innerHTML=`<span class="code">stack.push("${v}")</span> added to top`;
+}
+
+function sPop(){
+if(sData.length===0){document.getElementById('s-log').textContent='Stack is empty!';return;}
+const v=sData.pop();
+render('s-items',sData,'s-item');
+sArrow();
+document.getElementById('s-log').innerHTML=`<span class="code">stack.pop()</span> returned "${v}" from top`;
+}
+
+function sReset(){sData=[];sIdx=0;render('s-items',[],'s-item');sArrow();document.getElementById('s-log').textContent='Press push() to add items';}
+</script>
+</body>
+</html>

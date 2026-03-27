@@ -3,23 +3,48 @@ import java.util.*;
 public class GroupAnagrams {
 
     public static void main(String[] args) {
-        System.out.println(Solution1.groupAnagrams(new String[]{"eat", "tea", "tan", "ate", "nat", "bat"}));
-        System.out.println(Solution1.groupAnagrams(new String[]{"act","pots","tops","cat","stop","hat"}));
-        System.out.println(Solution1.groupAnagrams(new String[]{"x"}));
-        System.out.println(Solution1.groupAnagrams(new String[]{""}));
-        System.out.println(Solution1.groupAnagrams(new String[]{"", ""}));
-        System.out.println(Solution1.groupAnagrams(new String[]{"c", "c"}));
-        System.out.println(Solution1.groupAnagrams(new String[]{"ant", "ant"}));
-        System.out.println("-----------------------------------------------");
+//        System.out.println(Solution1.groupAnagrams(new String[]{"eat", "tea", "tan", "ate", "nat", "bat"}));
+//        System.out.println(Solution1.groupAnagrams(new String[]{"act","pots","tops","cat","stop","hat"}));
+//        System.out.println(Solution1.groupAnagrams(new String[]{"x"}));
+//        System.out.println(Solution1.groupAnagrams(new String[]{""}));
+//        System.out.println(Solution1.groupAnagrams(new String[]{"", ""}));
+//        System.out.println(Solution1.groupAnagrams(new String[]{"c", "c"}));
+//        System.out.println(Solution1.groupAnagrams(new String[]{"ant", "ant"}));
+//        System.out.println("-----------------------------------------------");
+//
+//        System.out.println(Solution2.groupAnagrams(new String[]{"eat", "tea", "tan", "ate", "nat", "bat"}));
+//        System.out.println(Solution2.groupAnagrams(new String[]{"act","pots","tops","cat","stop","hat"}));
+//        System.out.println(Solution2.groupAnagrams(new String[]{"x"}));
+//        System.out.println(Solution2.groupAnagrams(new String[]{""}));
+//        System.out.println(Solution2.groupAnagrams(new String[]{"", ""}));
+//        System.out.println(Solution2.groupAnagrams(new String[]{"c", "c"}));
+//        System.out.println(Solution2.groupAnagrams(new String[]{"ant", "ant"}));
+//        System.out.println("-----------------------------------------------");
 
-        System.out.println(Solution2.groupAnagrams(new String[]{"eat", "tea", "tan", "ate", "nat", "bat"}));
-        System.out.println(Solution2.groupAnagrams(new String[]{"act","pots","tops","cat","stop","hat"}));
-        System.out.println(Solution2.groupAnagrams(new String[]{"x"}));
-        System.out.println(Solution2.groupAnagrams(new String[]{""}));
-        System.out.println(Solution2.groupAnagrams(new String[]{"", ""}));
-        System.out.println(Solution2.groupAnagrams(new String[]{"c", "c"}));
-        System.out.println(Solution2.groupAnagrams(new String[]{"ant", "ant"}));
-        System.out.println("-----------------------------------------------");
+        System.out.println(Solution5.groupAnagrams(new String[]{"eat", "tea", "tan", "ate", "nat", "bat"}));
+        System.out.println(Solution5.groupAnagrams(new String[]{"act","pots","tops","cat","stop","hat"}));
+        System.out.println(Solution5.groupAnagrams(new String[]{"x"}));
+        System.out.println(Solution5.groupAnagrams(new String[]{""}));
+        System.out.println(Solution5.groupAnagrams(new String[]{"", ""}));
+        System.out.println(Solution5.groupAnagrams(new String[]{"c", "c"}));
+        System.out.println(Solution5.groupAnagrams(new String[]{"ant", "ant"}));
+    }
+
+    static class Solution5 {
+        public static List<List<String>> groupAnagrams(String[] strs) {
+            var map = new HashMap<String, List<String>>();
+
+            for(var i = 0; i < strs.length; i++) {
+                var sArr = strs[i].toLowerCase().toCharArray();
+                Arrays.sort(sArr);
+                var key = new String(sArr);
+
+                map.computeIfAbsent(key, k -> new ArrayList<>()).add(strs[i]);
+            }
+
+            return map.values().stream()
+                    .toList();
+        }
     }
 
 
