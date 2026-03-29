@@ -32,8 +32,33 @@ public class CodingInterviewTask8 {
                 List.of("Dan", "Eve", "Frank")
         );
 
-        System.out.println(solution1(groups));
+        System.out.println(solution2(groups));
     }
+
+    public static List<String> solution2(List<List<String>> groups) {
+        var result = new ArrayList<String>();
+        var guestGroupQueue = new ArrayDeque<String>();
+        var layerSize = new ArrayList<Integer>();
+
+        for (var group : groups) {
+            layerSize.add(group.size());
+
+            for (var guest : group) {
+                guestGroupQueue.add(guest);
+            }
+        }
+
+        for (var i = 0; i < layerSize.size(); i++) {
+            for (var j = 0; j < layerSize.get(i); j++) {
+                result.add(
+                        String.format("%s - group %s", guestGroupQueue.poll(), i + 1));
+            }
+        }
+
+        return result;
+    }
+
+
 
     public static List<String> solution1(List<List<String>> groups) {
         var queue = new ArrayDeque<String>();

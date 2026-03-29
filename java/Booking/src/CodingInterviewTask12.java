@@ -37,12 +37,58 @@ public class CodingInterviewTask12 {
                 5, List.of(4)
         );
 
-        System.out.println(solution1(connections, 1));
+        // Test 1: start from floor 1
+        System.out.println(solution2(connections, 1));
         // Expected: [[1], [2, 3], [4], [5]]
 
-        System.out.println(solution1(connections, 4));
+        // Test 2: start from floor 4
+        System.out.println(solution2(connections, 4));
         // Expected: [[4], [2, 3, 5], [1]]
     }
+
+    public static List<List<Integer>> solution2(Map<Integer, List<Integer>> connections, int start) {
+        var result = new ArrayList<List<Integer>>();
+        result.add(List.of(start));
+
+        if (connections.isEmpty()) {
+            return result;
+        }
+
+        var floorsQueue = new ArrayDeque<Integer>();
+        floorsQueue.add(start);
+
+        var visitedFloorsSet = new HashSet<Integer>();
+        visitedFloorsSet.add(start);
+
+        while(!floorsQueue.isEmpty()) {
+            var layerSize = floorsQueue.size();
+            var layer = new ArrayList<Integer>();
+
+            for (var i = 0; i < layerSize; i++) {
+                var currentFloor = floorsQueue.poll();
+                var floorConnections = connections.getOrDefault(currentFloor, List.of());
+
+                for (var floor : floorConnections) {
+                    if (visitedFloorsSet.add(floor)) {
+                        floorsQueue.add(floor);
+                        layer.add(floor);
+                    }
+                }
+            }
+
+            if (!layer.isEmpty()) {
+                result.add(layer);
+            }
+        }
+
+        return result;
+    }
+
+
+
+
+
+
 
     public static List<List<Integer>> solution1(Map<Integer, List<Integer>> connections, int start) {
         var result = new ArrayList<List<Integer>>();

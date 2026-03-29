@@ -24,24 +24,62 @@ public class CodingInterviewTask11 {
      *            "Floor 1: Coffee", "Floor 1: Towels"]
      */
     public static void main(String[] args) {
+        // Test 1: multiple floors, multiple orders
         var orders = List.of(
-                new int[]{3, 0}, // floor 3, item index 0
-                new int[]{1, 1}, // floor 1, item index 1
-                new int[]{3, 2}, // floor 3, item index 2
-                new int[]{1, 3}  // floor 1, item index 3
+                new int[]{3, 0},
+                new int[]{1, 1},
+                new int[]{3, 2},
+                new int[]{1, 3}
         );
         var items = List.of("Pizza", "Coffee", "Wine", "Towels");
-
-        System.out.println(solution1(orders, items));
+        System.out.println(solution2(orders, items));
         // Expected: [Floor 3: Pizza, Floor 3: Wine, Floor 1: Coffee, Floor 1: Towels]
 
         // Test 2: single order
-        System.out.println(solution1(
+        System.out.println(solution2(
                 List.of(new int[]{5, 0}),
                 List.of("Soda")
         ));
         // Expected: [Floor 5: Soda]
     }
+
+    public static List<String> solution2(List<int[]> orders, List<String> items) {
+        if (orders.isEmpty()) {
+            throw new IllegalArgumentException("There are no orders provided");
+        }
+
+        var result = new ArrayList<String>();
+        var orderFloorGroup = new HashMap<Integer, List<Integer>>();
+        var floorQueue = new ArrayDeque<Integer>();
+        var visitedFloorSet = new HashSet<Integer>();
+
+        for (var order : orders) {
+            var floor = order[0];
+            var itemIndex = order[1];
+
+            orderFloorGroup.computeIfAbsent(floor, k -> new ArrayList<>()).add(itemIndex);
+
+            if (visitedFloorSet.add(floor)) {
+                floorQueue.add(floor);
+            }
+        }
+
+        while (!floorQueue.isEmpty()) {
+            var currentFloor = floorQueue.poll();
+            var currentFloorOrderIndex = orderFloorGroup.get(currentFloor);
+
+            for (var index : currentFloorOrderIndex) {
+                    var item = items.get(index);
+                    var orderDescription = String.format("Floor %s: %s", currentFloor, item);
+
+                    result.add(orderDescription);
+            }
+        }
+
+        return result;
+    }
+
+
 
     public static List<String> solution1(List<int[]> orders, List<String> items) {
         if (orders.isEmpty()) {

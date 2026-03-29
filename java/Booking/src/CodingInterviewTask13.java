@@ -24,24 +24,76 @@ public class CodingInterviewTask13 {
      */
     public static void main(String[] args) {
         var connections = List.of(
-                new String[]{"Amsterdam", "London"}, // Amsterdam : [London, Berlin]
-                new String[]{"London", "Paris"}, // London : [Paris]
+                new String[]{"Amsterdam", "London"},
+                new String[]{"London", "Paris"},
                 new String[]{"Amsterdam", "Berlin"},
-                new String[]{"Berlin", "Rome"}, // Berlin: [Rome]
-                new String[]{"Paris", "Rome"}  // Paris: [Rome]
+                new String[]{"Berlin", "Rome"},
+                new String[]{"Paris", "Rome"}
         );
 
-        // Test 1: shortest route exists
-        System.out.println(solution1(connections, "Amsterdam", "Rome")); // Expected: 2
+        // Test 1: shortest route
+        System.out.println(solution2(connections, "Amsterdam", "Rome")); // Expected: 2
 
         // Test 2: direct flight
-        System.out.println(solution1(connections, "Amsterdam", "London")); // Expected: 1
+        System.out.println(solution2(connections, "Amsterdam", "London")); // Expected: 1
 
         // Test 3: same city
-        System.out.println(solution1(connections, "Paris", "Paris")); // Expected: 0
+        System.out.println(solution2(connections, "Paris", "Paris")); // Expected: 0
 
         // Test 4: no route
-        System.out.println(solution1(connections, "Amsterdam", "Tokyo")); // Expected: -1
+        System.out.println(solution2(connections, "Amsterdam", "Tokyo")); // Expected: -1
+    }
+
+    public static int solution2(List<String[]> connections, String start, String end) {
+        if (connections.isEmpty()) {
+            return -1;
+        }
+
+        if (start.equals(end)) {
+            return 0;
+        }
+
+        var connectionGraph = new HashMap<String, List<String>>();
+
+        var citiesQueue = new ArrayDeque<String>();
+        citiesQueue.add(start);
+
+        var visitedCitiesSet = new HashSet<String>();
+        visitedCitiesSet.add(start);
+
+        var minimumConnections = 0;
+
+        for (var connection : connections) {
+            var cityTo = connection[0];
+            var cityFrom = connection[1];
+
+            connectionGraph.computeIfAbsent(cityTo, c -> new ArrayList<>()).add(cityFrom);
+            connectionGraph.computeIfAbsent(cityFrom, c -> new ArrayList<>()).add(cityTo);
+        }
+
+        while (!citiesQueue.isEmpty()) {
+            var layerSize = citiesQueue.size();
+
+            for (var i = 0; i < layerSize; i++) {
+                var currentCity = citiesQueue.poll();
+
+                if (Objects.equals(currentCity, end)) {
+                    return minimumConnections;
+                }
+
+                var connection = connectionGraph.getOrDefault(currentCity, List.of());
+
+                for (var city : connection) {
+                    if (visitedCitiesSet.add(city)) {
+                        citiesQueue.add(city);
+                    }
+                }
+            }
+
+            minimumConnections++;
+        }
+
+        return -1;
     }
 
     public static int solution1(List<String[]> connections, String start, String end) {

@@ -25,11 +25,38 @@ public class CodingInterviewTask9 {
                 9, List.of()     // floor 9 is isolated
         );
 
-        System.out.println(solution1(connections, 1));
+        // Test 1: all connected floors
+        System.out.println(solution2(connections, 1));
         // Expected: [1, 2, 3, 4, 5] (order may vary)
 
-        System.out.println(solution1(connections, 9));
-        // Expected: [9] (isolated, can only reach itself)
+        // Test 2: isolated floor
+        System.out.println(solution2(connections, 9));
+        // Expected: [9]
+    }
+
+    public static List<Integer> solution2(Map<Integer, List<Integer>> connections, int start) {
+        var result = new ArrayList<Integer>();
+        result.add(start);
+
+        var floorsQueue = new ArrayDeque<Integer>();
+        floorsQueue.add(start);
+
+        var visitedFloorsSet = new HashSet<Integer>();
+        visitedFloorsSet.add(start);
+
+        while (!floorsQueue.isEmpty()) {
+            var currentFloor = floorsQueue.poll();
+            var connection = connections.getOrDefault(currentFloor, List.of());
+
+            for (var floor : connection) {
+                if (visitedFloorsSet.add(floor)) {
+                    result.add(floor);
+                    floorsQueue.add(floor);
+                }
+            }
+        }
+
+        return result;
     }
 
     public static List<Integer> solution1(Map<Integer, List<Integer>> connections, int start) {
