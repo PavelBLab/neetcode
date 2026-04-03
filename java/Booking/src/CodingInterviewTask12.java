@@ -37,12 +37,51 @@ public class CodingInterviewTask12 {
                 5, List.of(4)
         );
 
-        System.out.println(solution4(connections, 1));
+        System.out.println(solution5(connections, 1));
         // Expected: [[1], [2, 3], [4], [5]]
 
-        System.out.println(solution4(connections, 4));
+        System.out.println(solution5(connections, 4));
         // Expected: [[4], [2, 3, 5], [1]]
     }
+
+    public static List<List<Integer>> solution5(Map<Integer, List<Integer>> connections, int start) {
+        if (connections == null || connections.isEmpty()) {
+            return List.of();
+        }
+
+        var result = new ArrayList<List<Integer>>();
+        result.add(List.of(start));
+
+        var floorQueue = new ArrayDeque<Integer>();
+        floorQueue.add(start);
+
+        var visitedFloors = new HashSet<Integer>();
+        visitedFloors.add(start);
+
+        while (!floorQueue.isEmpty()) {
+            var layerSize = floorQueue.size();
+            var layer = new ArrayList<Integer>();
+
+            for (var i = 0; i < layerSize; i++) {
+                var currentFloor = floorQueue.poll();
+                var connectionFloors = connections.get(currentFloor);
+
+                for (var connection : connectionFloors) {
+                    if (visitedFloors.add(connection)) {
+                        layer.add(connection);
+                        floorQueue.add(connection);
+                    }
+                }
+            }
+
+            if (!layer.isEmpty()) {
+                result.add(layer);
+            }
+        }
+
+        return result;
+    }
+
 
     public static List<List<Integer>> solution4(Map<Integer, List<Integer>> connections, int start) {
         var result = new ArrayList<List<Integer>>();
@@ -59,15 +98,15 @@ public class CodingInterviewTask12 {
             var layer = new ArrayList<Integer>();
 
             for (var i = 0; i < layerSize; i++) {
-               var currentFloor = floorsQueue.poll();
-               var connectionFloors = connections.getOrDefault(currentFloor, List.of());
+                var currentFloor = floorsQueue.poll();
+                var connectionFloors = connections.getOrDefault(currentFloor, List.of());
 
-               for (var floor : connectionFloors) {
+                for (var floor : connectionFloors) {
                     if (visitedFloors.add(floor)) {
                         layer.add(floor);
                         floorsQueue.add(floor);
                     }
-               }
+                }
             }
 
             if (!layer.isEmpty()) {
@@ -126,7 +165,7 @@ public class CodingInterviewTask12 {
         var visitedFloorsSet = new HashSet<Integer>();
         visitedFloorsSet.add(start);
 
-        while(!floorsQueue.isEmpty()) {
+        while (!floorsQueue.isEmpty()) {
             var layerSize = floorsQueue.size();
             var layer = new ArrayList<Integer>();
 
@@ -149,11 +188,6 @@ public class CodingInterviewTask12 {
 
         return result;
     }
-
-
-
-
-
 
 
     public static List<List<Integer>> solution1(Map<Integer, List<Integer>> connections, int start) {

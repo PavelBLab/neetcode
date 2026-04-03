@@ -36,20 +36,43 @@ public class CodingInterviewTask5 {
      *   (nothing missing)
      */
     public static void main(String[] args) {
-        System.out.println(solution3(
+        System.out.println(solution4(
                 List.of(1, 2, 3, 2, 4),
                 List.of(2, 1, 4)
         )); // Expected: [3, 2]
 
-        System.out.println(solution3(
+        System.out.println(solution4(
                 List.of(10, 20, 10, 10),
                 List.of(10, 10)
         )); // Expected: [20, 10]
 
-        System.out.println(solution3(
+        System.out.println(solution4(
                 List.of(5, 6, 7),
                 List.of(5, 6, 7)
         )); // Expected: []
+    }
+
+    public static List<Integer> solution4(List<Integer> primary, List<Integer> secondary) {
+        var result = new ArrayList<Integer>();
+        var secondaryMap = new HashMap<Integer, Integer>();
+
+        for (var v : secondary) {
+            secondaryMap.put(v, secondaryMap.getOrDefault(v, 0) + 1);
+        }
+
+        for (var val : primary) {
+            if (!secondaryMap.containsKey(val)) {
+                result.add(val);
+            } else {
+                if (secondaryMap.get(val) == 0) {
+                    result.add(val);
+                }
+
+                secondaryMap.put(val, secondaryMap.get(val) - 1);
+            }
+        }
+
+        return result;
     }
 
     public static List<Integer> solution3(List<Integer> primary, List<Integer> secondary) {

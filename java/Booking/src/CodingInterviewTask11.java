@@ -32,14 +32,50 @@ public class CodingInterviewTask11 {
         );
         var items = List.of("Pizza", "Coffee", "Wine", "Towels");
 
-        System.out.println(solution3(orders, items));
+        System.out.println(solution4(orders, items));
         // Expected: [Floor 3: Pizza, Floor 3: Wine, Floor 1: Coffee, Floor 1: Towels]
 
-        System.out.println(solution3(
+        System.out.println(solution4(
                 List.of(new int[]{5, 0}),
                 List.of("Soda")
         ));
         // Expected: [Floor 5: Soda]
+    }
+
+    public static List<String> solution4(List<int[]> orders, List<String> items) {
+        if (orders == null || orders.isEmpty()) {
+            return List.of();
+        }
+
+        var result = new ArrayList<String>();
+
+        var graph = new HashMap<Integer, List<Integer>>();
+
+        var floorQueue = new ArrayDeque<Integer>();
+        floorQueue.add(orders.getFirst()[0]);
+
+        var visitedFloors = new HashSet<Integer>();
+        visitedFloors.add(orders.getFirst()[0]);
+
+        for (var order : orders) {
+            var floor = order[0];
+            graph.computeIfAbsent(floor, o -> new ArrayList<>()).add(order[1]);
+
+            if (visitedFloors.add(floor)) {
+                floorQueue.add(floor);
+            }
+        }
+
+        while (!floorQueue.isEmpty()) {
+            var currentFloor = floorQueue.poll();
+            var orderList = graph.get(currentFloor);
+
+            for (var order : orderList) {
+                result.add(String.format("Floor %s: %s", currentFloor, items.get(order)));
+            }
+        }
+
+        return result;
     }
 
     public static List<String> solution3(List<int[]> orders, List<String> items) {

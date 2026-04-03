@@ -32,7 +32,32 @@ public class CodingInterviewTask8 {
                 List.of("Dan", "Eve", "Frank")
         );
 
-        System.out.println(solution3(groups));
+        System.out.println(solution4(groups));
+    }
+
+    public static List<String> solution4(List<List<String>> groups) {
+        var result = new ArrayList<String>();
+        var guestsQueue = new ArrayDeque<String>();
+        var numberOfPeopleInGroup = new ArrayList<Integer>();
+
+        for (var group : groups) {
+            numberOfPeopleInGroup.add(group.size());
+
+            for (var guest : group) {
+                guestsQueue.add(guest);
+            }
+        }
+
+        for (var i = 0; i < numberOfPeopleInGroup.size(); i++) {
+            for (var j = 0; j < numberOfPeopleInGroup.get(i); j++) {
+                var guest = guestsQueue.poll();
+                var formatedGuest = String.format("%s - group %s", guest, i + 1);
+
+                result.add(formatedGuest);
+            }
+        }
+
+        return result;
     }
 
     public static List<String> solution3(List<List<String>> groups) {

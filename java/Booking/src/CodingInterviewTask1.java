@@ -19,8 +19,39 @@ public class CodingInterviewTask1 {
                 "the room was dirty and noisy",
                 "clean room great location friendly staff comfortable bed");
 
-        System.out.println(solution3(positiveKeywords, reviews));
+        System.out.println(solution4(positiveKeywords, reviews));
         // Expected: [3, 1, 0, 2]
+    }
+
+    public static List<Integer> solution4(List<String> positiveKeywords, List<String> reviews) {
+        var scoreMap = new HashMap<Integer, Integer>();
+        var positiveKeywordSet = new HashSet<>(positiveKeywords);
+
+        for (var i = 0; i < reviews.size(); i++) {
+            scoreMap.put(i, scoreMap.getOrDefault(i, 0) + getScore(positiveKeywordSet, reviews.get(i)));
+        }
+
+        return scoreMap.entrySet().stream()
+                .sorted(
+                        Comparator.comparingInt((Map.Entry<Integer, Integer> e) -> e.getValue())
+                                .reversed()
+                                .thenComparing(Map.Entry::getKey)
+                )
+                .map(Map.Entry::getKey)
+                .toList();
+    }
+
+    private static int getScore(Set<String> positiveKeywordSet, String review) {
+        var score = 0;
+        var formatedReviewArr = review.toLowerCase().replaceAll("[^a-z0-9 ]", " ").split(" ");
+
+        for (var word : formatedReviewArr) {
+            if (positiveKeywordSet.contains(word)) {
+                score++;
+            }
+        }
+
+        return score;
     }
 
     public static List<Integer> solution3(List<String> positiveKeywords, List<String> reviews) {
