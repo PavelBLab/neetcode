@@ -32,22 +32,29 @@ public class CodingInterviewTask6 {
      *   Result: []
      */
     public static void main(String[] args) {
-        // Test 1
-        System.out.println(solution3(20, 2, 3, 6));
+        System.out.println(solution4(20, 2, 3, 6));
         // Expected: [2, 3, 4, 8, 9, 10, 14, 15, 16, 20]
 
-        // Test 2
-        System.out.println(solution3(10, 3, 5, 15));
+        System.out.println(solution4(10, 3, 5, 15));
         // Expected: [3, 5, 6, 9, 10]
 
-        // Test 3
-        System.out.println(solution3(15, 4, 6, 2));
+        System.out.println(solution4(15, 4, 6, 2));
         // Expected: []
 
-        // Test 4
-        System.out.println(solution3(1, 1, 1, 1));
+        System.out.println(solution4(1, 1, 1, 1));
         // Expected: []
+    }
 
+    public static List<Integer> solution4(int n, int x, int y, int z) {
+        var result = new ArrayList<Integer>();
+
+        for (var i = 1; i <= n; i++) {
+            if ((i % x == 0 || i % y == 0) && i % z != 0) {
+                result.add(i);
+            }
+        }
+
+        return result;
     }
 
     public static List<Integer> solution3(int n, int x, int y, int z) {
@@ -61,13 +68,6 @@ public class CodingInterviewTask6 {
 
         return result;
     }
-
-
-
-
-
-
-
 
     public static List<Integer> solution2(int n, int x, int y, int z) {
         var result = new ArrayList<Integer>();

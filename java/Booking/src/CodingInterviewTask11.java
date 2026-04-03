@@ -24,7 +24,6 @@ public class CodingInterviewTask11 {
      *            "Floor 1: Coffee", "Floor 1: Towels"]
      */
     public static void main(String[] args) {
-        // Test 1: multiple floors, multiple orders
         var orders = List.of(
                 new int[]{3, 0},
                 new int[]{1, 1},
@@ -32,15 +31,45 @@ public class CodingInterviewTask11 {
                 new int[]{1, 3}
         );
         var items = List.of("Pizza", "Coffee", "Wine", "Towels");
-        System.out.println(solution2(orders, items));
+
+        System.out.println(solution3(orders, items));
         // Expected: [Floor 3: Pizza, Floor 3: Wine, Floor 1: Coffee, Floor 1: Towels]
 
-        // Test 2: single order
-        System.out.println(solution2(
+        System.out.println(solution3(
                 List.of(new int[]{5, 0}),
                 List.of("Soda")
         ));
         // Expected: [Floor 5: Soda]
+    }
+
+    public static List<String> solution3(List<int[]> orders, List<String> items) {
+        var result = new ArrayList<String>();
+        var graph = new HashMap<Integer, List<Integer>>();
+        var orderQueue = new ArrayDeque<Integer>();
+        orderQueue.add(orders.getFirst()[0]);
+
+        var visitedFloor = new HashSet<Integer>();
+        visitedFloor.add(orders.getFirst()[0]);
+
+        for (var order : orders) {
+            var floor = order[0];
+            graph.computeIfAbsent(floor, item -> new ArrayList<>()).add(order[1]);
+
+            if (visitedFloor.add(floor)) {
+                orderQueue.add(floor);
+            }
+        }
+
+        while (!orderQueue.isEmpty()) {
+            var floor = orderQueue.poll();
+            var itemIndexes = graph.get(floor);
+
+            for (var itemIndex : itemIndexes) {
+                result.add(String.format("Floor %s: %s", floor, items.get(itemIndex)));
+            }
+        }
+
+        return result;
     }
 
     public static List<String> solution2(List<int[]> orders, List<String> items) {
@@ -69,16 +98,15 @@ public class CodingInterviewTask11 {
             var currentFloorOrderIndex = orderFloorGroup.get(currentFloor);
 
             for (var index : currentFloorOrderIndex) {
-                    var item = items.get(index);
-                    var orderDescription = String.format("Floor %s: %s", currentFloor, item);
+                var item = items.get(index);
+                var orderDescription = String.format("Floor %s: %s", currentFloor, item);
 
-                    result.add(orderDescription);
+                result.add(orderDescription);
             }
         }
 
         return result;
     }
-
 
 
     public static List<String> solution1(List<int[]> orders, List<String> items) {
@@ -113,8 +141,8 @@ public class CodingInterviewTask11 {
             var itemIndexList = orderMap.get(floor);
 
             for (var itemIndex : itemIndexList) {
-                    var floorWithItem = String.format("Floor %s: %s", floor, items.get(itemIndex));
-                    result.add(floorWithItem);
+                var floorWithItem = String.format("Floor %s: %s", floor, items.get(itemIndex));
+                result.add(floorWithItem);
             }
         }
 

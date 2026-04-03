@@ -21,11 +21,26 @@ public class CodingInterviewTask7 {
      *   result = ["Checked in: Anna", "Checked in: Bob", "Checked in: Clara"]
      */
     public static void main(String[] args) {
-        System.out.println(solution2(List.of("Anna", "Bob", "Clara")));
+        System.out.println(solution3(List.of("Anna", "Bob", "Clara")));
         // Expected: [Checked in: Anna, Checked in: Bob, Checked in: Clara]
 
-        System.out.println(solution2(List.of()));
+        System.out.println(solution3(List.of()));
         // Expected: []
+    }
+
+    public static List<String> solution3(List<String> guests) {
+        var result = new ArrayList<String>();
+        var guestArrivedQueue = new ArrayDeque<String>();
+
+        for (var guest : guests) {
+            guestArrivedQueue.add(guest);
+        }
+
+        while (!guestArrivedQueue.isEmpty()) {
+            result.add(String.format("Checked in: %s", guestArrivedQueue.poll()));
+        }
+
+        return result;
     }
 
     public static List<String> solution2(List<String> guests) {

@@ -33,37 +33,38 @@ public class CodingInterviewTask4 {
      *   ([2,4] and [4,8] are back-to-back so no break, but gap between 8 and 9)
      */
     public static void main(String[] args) {
-        // Test 1: two breaks
-        // System.out.println(solution1(List.of(new int[]{1, 3}, new int[]{5, 8}, new int[]{10, 14})));
-        // Expected: [[3, 5], [8, 10]]
-
-        // Test 2: no breaks
-        // System.out.println(solution1(List.of(new int[]{0, 24})));
-        // Expected: []
-
-        // Test 3: back-to-back + one break
-        // System.out.println(solution1(List.of(new int[]{2, 4}, new int[]{4, 8}, new int[]{9, 12})));
-        // Expected: [[8, 9]]
-
-        // Test 4: single shift
-        // System.out.println(solution1(List.of(new int[]{6, 14})));
-        // Expected: []
-
-        // Test 5
-        System.out.println(solution2(List.of(
+        System.out.println(solution3(List.of(
                 new int[]{1, 3}, new int[]{5, 8}, new int[]{10, 14}
         ))); // Expected: [[3,5], [8,10]]
 
-        // Test 6
-        System.out.println(solution2(List.of(
+        System.out.println(solution3(List.of(
                 new int[]{0, 24}
         ))); // Expected: []
 
-        // Test 7
-        System.out.println(solution2(List.of(
+        System.out.println(solution3(List.of(
                 new int[]{2, 4}, new int[]{4, 8}, new int[]{9, 12}
         ))); // Expected: [[8,9]]
     }
+
+    public static List<int[]> solution3(List<int[]> schedule) {
+        var result = new ArrayList<int[]>();
+
+        if (schedule.isEmpty() || schedule.size() == 1) {
+            return List.of();
+        }
+
+        for (var i = 0; i < schedule.size() - 1; i++) {
+            var shiftEnd = schedule.get(i)[1];
+            var shiftStart = schedule.get(i + 1)[0];
+
+            if (shiftStart !=  shiftEnd) {
+                result.add(new int[]{shiftEnd, shiftStart});
+            }
+        }
+
+        return result;
+    }
+
 
     public static List<int[]> solution2(List<int[]> schedule) {
         var result = new ArrayList<int[]>();

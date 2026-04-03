@@ -22,17 +22,42 @@ public class CodingInterviewTask10 {
      *   Result: ["Bob", "Dan", "Anna", "Clara", "Eve"]
      */
     public static void main(String[] args) {
-        System.out.println(solution2(List.of("Anna", "VIP:Bob", "Clara", "VIP:Dan", "Eve")));
+        System.out.println(solution3(List.of("Anna", "VIP:Bob", "Clara", "VIP:Dan", "Eve")));
         // Expected: [Bob, Dan, Anna, Clara, Eve]
 
-        System.out.println(solution2(List.of("VIP:Zara")));
+        System.out.println(solution3(List.of("VIP:Zara")));
         // Expected: [Zara]
 
-        System.out.println(solution2(List.of("Anna", "Bob")));
+        System.out.println(solution3(List.of("Anna", "Bob")));
         // Expected: [Anna, Bob]
 
-        System.out.println(solution2(List.of()));
+        System.out.println(solution3(List.of()));
         // Expected: []
+    }
+
+    public static List<String> solution3(List<String> guests) {
+        var result = new ArrayList<String>();
+        var vipGuestsQueue = new ArrayDeque<String>();
+        var regularGuestsQueue = new ArrayDeque<String>();
+
+        for (var guest : guests) {
+            if (guest.contains("VIP")) {
+                vipGuestsQueue.add(guest);
+            } else {
+                regularGuestsQueue.add(guest);
+            }
+        }
+
+        while (!vipGuestsQueue.isEmpty()) {
+            var formattedVipGuest = vipGuestsQueue.poll().replace("VIP:", "");
+            result.add(formattedVipGuest);
+        }
+
+        while (!regularGuestsQueue.isEmpty()) {
+            result.add(regularGuestsQueue.poll());
+        }
+
+        return result;
     }
 
     public static List<String> solution2(List<String> guests) {

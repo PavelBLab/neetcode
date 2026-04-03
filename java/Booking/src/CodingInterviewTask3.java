@@ -21,7 +21,6 @@ public class CodingInterviewTask3 {
      *   - Keywords are always single words (never "swimming pool")
      */
     public static void main(String[] args) {
-
         var positiveKeywords = "breakfast beach citycenter location metro view staff price";
         var negativeKeywords = "noise dirty unfair";
 
@@ -35,22 +34,68 @@ public class CodingInterviewTask3 {
         );
 
         int k = 2;
+        System.out.println(solution3(positiveKeywords, negativeKeywords, hotelIds, reviews, k));
+        // Expected: [2, 1]
+    }
 
-        // Hotel 1 reviews: [0], [2], [3]
-        //   Review 0: "view" +3, "citycenter" +3, "location" +3 = 9
-        //   Review 2: "location" +3, "citycenter" +3, "metro" +3 = 9
-        //   Review 3: no keywords = 0
-        //   Hotel 1 total = 18
-        //
-        // Hotel 2 reviews: [1], [4]
-        //   Review 1: "breakfast" +3, "location" +3, "citycenter" +3, "price" +3 = 12
-        //   Review 4: "staff" +3, "location" +3, "citycenter" +3 = 9
-        //   Hotel 2 total = 21
-        //
-        // Expected output: [2, 1]
+    public static List<Integer> solution3(String positiveKeywords, String negativeKeywords,
+                                          List<Integer> hotelIds, List<String> reviews, int k) {
+        if (hotelIds.size() != reviews.size()) {
+            throw new IllegalArgumentException("hotelIds size not equal reviews size.");
+        }
 
-        // System.out.println(solution1(positiveKeywords, negativeKeywords, hotelIds, reviews, k));
-        System.out.println(solution2(positiveKeywords, negativeKeywords, hotelIds, reviews, k));
+        var hotelScoreMap = new HashMap<Integer, Integer>();
+        var positiveKeywordsSet = convertKeywordsToSet(positiveKeywords);
+        var negativeKeywordsSet = convertKeywordsToSet(negativeKeywords);
+
+        for (var i = 0; i < reviews.size(); i++) {
+            hotelScoreMap.put(
+                    hotelIds.get(i),
+                    hotelScoreMap.getOrDefault(hotelIds.get(i), 0)
+                            + calculateScore(reviews.get(i), positiveKeywordsSet, negativeKeywordsSet));
+        }
+
+
+        return hotelScoreMap.entrySet().stream()
+                .sorted(
+                        Comparator.comparingInt((Map.Entry<Integer, Integer> e) -> e.getValue())
+                                .reversed()
+                                .thenComparingInt(Map.Entry::getKey)
+                )
+                .limit(k)
+                .map(Map.Entry::getKey)
+                .toList();
+    }
+
+    public static int calculateScore(String review,
+                                     Set<String> positiveKeywordsSet,
+                                     Set<String> negativeKeywordsSet) {
+        var score = 0;
+        var formatedReviewArr = review.toLowerCase().replaceAll("[^a-z0-9 ]", "").split(" ");
+
+        for (var word : formatedReviewArr) {
+            if (positiveKeywordsSet.contains(word)) {
+                score += 3;
+            }
+
+            if (negativeKeywordsSet.contains(word)) {
+                score--;
+            }
+        }
+
+
+        return score;
+    }
+
+    public static Set<String> convertKeywordsToSet(final String keywords) {
+        var arr = keywords.toLowerCase().split(" ");
+        var set = new HashSet<String>();
+
+        for (var word : arr) {
+            set.add(word);
+        }
+
+        return set;
     }
 
     public static List<Integer> solution2(final String positiveKeywords,

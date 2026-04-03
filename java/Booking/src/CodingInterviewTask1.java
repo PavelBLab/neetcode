@@ -19,10 +19,33 @@ public class CodingInterviewTask1 {
                 "the room was dirty and noisy",
                 "clean room great location friendly staff comfortable bed");
 
-        // System.out.println(solution1(positiveKeywords, reviews));
+        System.out.println(solution3(positiveKeywords, reviews));
         // Expected: [3, 1, 0, 2]
+    }
 
-        System.out.println(solution2(positiveKeywords, reviews));
+    public static List<Integer> solution3(List<String> positiveKeywords, List<String> reviews) {
+        var scores = new HashMap<Integer, Integer>();
+        var positiveKeywordsSet = new HashSet<>(positiveKeywords);
+
+        for (var i = 0; i < reviews.size(); i++) {
+            var wordArr = reviews.get(i).toLowerCase().replaceAll("[^a-z0-9 ]", "").split(" ");
+            scores.put(i, 0);
+
+            for (var word : wordArr) {
+                if (positiveKeywordsSet.contains(word)) {
+                    scores.put(i, scores.get(i) + 1);
+                }
+            }
+        }
+
+        return scores.entrySet().stream()
+                .sorted(
+                        Comparator.comparingInt((Map.Entry<Integer, Integer> e) -> e.getValue())
+                                .reversed()
+                                .thenComparingInt(Map.Entry::getKey)
+                )
+                .map(Map.Entry::getKey)
+                .toList();
     }
 
     public static List<Integer> solution2(List<String> positiveKeywords, List<String> reviews) {

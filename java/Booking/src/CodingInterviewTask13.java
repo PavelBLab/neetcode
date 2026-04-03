@@ -32,17 +32,111 @@ public class CodingInterviewTask13 {
         );
 
         // Test 1: shortest route
-        System.out.println(solution2(connections, "Amsterdam", "Rome")); // Expected: 2
+        System.out.println(solution4(connections, "Amsterdam", "Rome")); // Expected: 2
 
         // Test 2: direct flight
-        System.out.println(solution2(connections, "Amsterdam", "London")); // Expected: 1
+        System.out.println(solution4(connections, "Amsterdam", "London")); // Expected: 1
 
         // Test 3: same city
-        System.out.println(solution2(connections, "Paris", "Paris")); // Expected: 0
+        System.out.println(solution4(connections, "Paris", "Paris")); // Expected: 0
 
         // Test 4: no route
-        System.out.println(solution2(connections, "Amsterdam", "Tokyo")); // Expected: -1
+        System.out.println(solution4(connections, "Amsterdam", "Tokyo")); // Expected: -1
     }
+
+    public static int solution4(List<String[]> connections, String start, String end) {
+        if (start.equals(end)) {
+            return 0;
+        }
+
+        var graph = new HashMap<String, List<String>>();
+
+        var citiesQueue = new ArrayDeque<String>();
+        citiesQueue.add(start);
+
+        var visitedCities = new HashSet<String>();
+        visitedCities.add(start);
+
+        var connectionCounter = 1;
+
+        for (var i = 0; i < connections.size(); i++) {
+            var startCity = connections.get(i)[0];
+            var endCity = connections.get(i)[1];
+
+            graph.computeIfAbsent(startCity, c -> new ArrayList<>()).add(endCity);
+            graph.computeIfAbsent(endCity, c -> new ArrayList<>()).add(startCity);
+        }
+
+        while (!citiesQueue.isEmpty()) {
+            var layerSize = citiesQueue.size();
+
+            for (var i = 0; i < layerSize; i++) {
+                var currentCity = citiesQueue.poll();
+                var cityConnections = graph.getOrDefault(currentCity, List.of());
+
+                for (var city : cityConnections) {
+                    if (city.equals(end)) {
+                        return connectionCounter;
+                    }
+
+                    if (visitedCities.add(city)) {
+                        citiesQueue.add(city);
+                    }
+                }
+            }
+            connectionCounter++;
+        }
+
+        return -1;
+    }
+
+    public static int solution3(List<String[]> connections, String start, String end) {
+        if (start.equals(end)) {
+            return 0;
+        }
+
+        var flightsGraph = new HashMap<String, List<String>>();
+
+        for (var i = 0; i < connections.size(); i++) {
+            var startConnection = connections.get(i)[0];
+            var endConnection = connections.get(i)[1];
+
+            flightsGraph.computeIfAbsent(startConnection, c -> new ArrayList<>()).add(endConnection);
+            flightsGraph.computeIfAbsent(endConnection, c -> new ArrayList<>()).add(startConnection);
+        }
+
+        var citiesQueue = new ArrayDeque<String>();
+        citiesQueue.add(start);
+
+        var visitedCities = new HashSet<String>();
+        visitedCities.add(start);
+
+        var connectionCounter = 1;
+
+        while (!citiesQueue.isEmpty()) {
+            var layerSize = citiesQueue.size();
+
+            for (var i = 0; i < layerSize; i++) {
+                var currentCity = citiesQueue.poll();
+                var connectionCities = flightsGraph.getOrDefault(currentCity, List.of());
+
+                for (var city : connectionCities) {
+                    if (visitedCities.add(city)) {
+
+                        if (city.equals(end)) {
+                            return connectionCounter;
+                        }
+
+                        citiesQueue.add(city);
+                    }
+                }
+            }
+            connectionCounter++;
+        }
+
+        return -1;
+    }
+
 
     public static int solution2(List<String[]> connections, String start, String end) {
         if (connections.isEmpty()) {

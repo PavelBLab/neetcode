@@ -36,61 +36,45 @@ public class CodingInterviewTask5 {
      *   (nothing missing)
      */
     public static void main(String[] args) {
-        // Test 1
-//        System.out.println(solution3(
-//                List.of(1, 2, 3, 2, 4),
-//                List.of(2, 1, 4)
-//        ));
-        // Expected: [3, 2]
-
-        // Test 2
-//        System.out.println(solution3(
-//                List.of(10, 20, 10, 10),
-//                List.of(10, 10)
-//        ));
-        // Expected: [10, 20]
-
-        // Test 3
-//        System.out.println(solution3(
-//                List.of(5, 6, 7),
-//                List.of(5, 6, 7)
-//        ));
-        // Expected: []
-
-        // Test 4: secondary is empty
-//        System.out.println(solution3(
-//                List.of(1, 2, 3),
-//                List.of()
-//        ));
-        // Expected: [1, 2, 3]
-
-
-        // Test 1: one ID missing entirely, one copy of duplicate missing
-        System.out.println(solution4(
+        System.out.println(solution3(
                 List.of(1, 2, 3, 2, 4),
                 List.of(2, 1, 4)
         )); // Expected: [3, 2]
 
-        // Test 2: one copy of 10 missing, 20 missing entirely
-        System.out.println(solution4(
+        System.out.println(solution3(
                 List.of(10, 20, 10, 10),
                 List.of(10, 10)
-        )); // Expected: [10, 20]
+        )); // Expected: [20, 10]
 
-        // Test 3: nothing missing
-        System.out.println(solution4(
+        System.out.println(solution3(
                 List.of(5, 6, 7),
                 List.of(5, 6, 7)
         )); // Expected: []
-
-        // Test 4: secondary is empty
-        System.out.println(solution2(
-                List.of(1, 2, 3),
-                List.of()
-        )); // Expected: [1, 2, 3]
     }
 
-    public static List<Integer> solution4(List<Integer> primary, List<Integer> secondary) {
+    public static List<Integer> solution3(List<Integer> primary, List<Integer> secondary) {
+        var result = new ArrayList<Integer>();
+        var secondaryMap = new HashMap<Integer, Integer>();
+
+        for (var i : secondary) {
+            secondaryMap.put(i, secondaryMap.getOrDefault(i, 0) + 1);
+        }
+
+        for (var i : primary) {
+            var secondaryReservation = secondaryMap.getOrDefault(i, 0);
+
+            if (secondaryReservation == 0) {
+                result.add(i);
+                continue;
+            }
+
+            secondaryMap.put(i, secondaryMap.get(i) - 1);
+        }
+
+        return result;
+    }
+
+    public static List<Integer> solution2(List<Integer> primary, List<Integer> secondary) {
         var result = new ArrayList<Integer>();
         var secondaryMap = new HashMap<Integer, Integer>();
 
@@ -104,61 +88,6 @@ public class CodingInterviewTask5 {
                 result.add(i);
             } else {
                 secondaryMap.put(i, secondaryValue - 1);
-            }
-        }
-
-        return result;
-    }
-
-
-
-
-
-
-
-
-
-    public static List<Integer> solution3(final List<Integer> primary, final List<Integer> secondary) {
-        var result = new ArrayList<Integer>();
-        var secondaryMap = new HashMap<Integer, Integer>();
-
-        for (var id : secondary) {
-            secondaryMap.put(id, secondaryMap.getOrDefault(id, 0) + 1);
-        }
-
-        for (var id : primary) {
-            var count = secondaryMap.getOrDefault(id, 0);
-
-            if (count == 0) {
-                result.add(id);
-            } else {
-                secondaryMap.put(id, secondaryMap.get(id) - 1);
-            }
-        }
-
-        return result;
-    }
-
-    public static List<Integer> solution2(final List<Integer> primary, final List<Integer> secondary) {
-        var result = new ArrayList<Integer>();
-        var secondaryMap = new HashMap<Integer, Integer>();
-
-        for (var id : secondary) {
-            secondaryMap.put(id, secondaryMap.getOrDefault(id, 0) + 1);
-        }
-
-        for (var i = 0; i < primary.size(); i++) {
-            var id = primary.get(i);
-
-            if (!secondaryMap.containsKey(id)) {
-                result.add(id);
-                continue;
-            }
-
-            if (secondaryMap.containsKey(id) && secondaryMap.get(id) == 0) {
-                result.add(id);
-            } else {
-                secondaryMap.put(id, secondaryMap.get(id) - 1);
             }
         }
 
