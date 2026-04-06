@@ -1,6 +1,8 @@
+package onlineassessment;
+
 import java.util.*;
 
-public class CodingInterviewTask9 {
+public class CodingInterviewTask9_ReachableFloors {
 
     /*
      * Problem: Reachable Floors

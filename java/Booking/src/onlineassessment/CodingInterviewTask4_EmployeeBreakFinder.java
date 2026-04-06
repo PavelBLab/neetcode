@@ -1,8 +1,11 @@
+package onlineassessment;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
-public class CodingInterviewTask4 {
+public class CodingInterviewTask4_EmployeeBreakFinder {
 
     /*
      * Problem: Employee Break Finder
@@ -131,5 +134,61 @@ public class CodingInterviewTask4 {
         }
 
         return result;
+    }
+
+    public static class CodingInterviewTask13_GroupAnagrams {
+
+        /*
+         * Problem: Group Anagrams
+         *
+         * Given an array of strings, group the anagrams together.
+         * Two strings are anagrams if they contain the same characters
+         * in any order.
+         *
+         * Reported in Booking.com OA.
+         *
+         * Example:
+         *   input: ["eat", "tea", "tan", "ate", "nat", "bat"]
+         *   output: [["eat","tea","ate"], ["tan","nat"], ["bat"]]
+         *   (group order doesn't matter)
+         */
+        public static void main(String[] args) {
+            System.out.println(solution2(new String[]{"eat", "tea", "tan", "ate", "nat", "bat"}));
+            // Expected: [[eat, tea, ate], [tan, nat], [bat]]
+
+            System.out.println(solution2(new String[]{""}));
+            // Expected: [[]]
+
+            System.out.println(solution2(new String[]{"a"}));
+            // Expected: [[a]]
+        }
+
+        public static List<List<String>> solution2(String[] words) {
+            var map = new HashMap<String, List<String>>();
+
+            for (var word : words) {
+                var wordArr = word.toCharArray();
+                Arrays.sort(wordArr);
+
+                map.computeIfAbsent(new String(wordArr), a -> new ArrayList<>()).add(word);
+            }
+
+            return map.values().stream()
+                    .toList();
+        }
+
+        public static List<List<String>> solution1(String[] words) {
+            var map = new HashMap<String, List<String>>();
+
+            for (var word : words) {
+                var key = word.toCharArray();
+                Arrays.sort(key);
+                map.computeIfAbsent(new String(key), l -> new ArrayList<>()).add(word);
+            }
+
+            return map.values().stream() // alternative new ArrayList<>(map.values())
+                    .toList();
+        }
+
     }
 }

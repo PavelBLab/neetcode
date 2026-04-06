@@ -1,6 +1,8 @@
+package onlineassessment;
+
 import java.util.*;
 
-public class CodingInterviewTask1 {
+public class CodingInterviewTask1_HotelReviewScore {
 
 
     /*

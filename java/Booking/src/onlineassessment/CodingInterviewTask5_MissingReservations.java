@@ -1,6 +1,8 @@
+package onlineassessment;
+
 import java.util.*;
 
-public class CodingInterviewTask5 {
+public class CodingInterviewTask5_MissingReservations {
 
     /*
      * Problem: Missing Reservations

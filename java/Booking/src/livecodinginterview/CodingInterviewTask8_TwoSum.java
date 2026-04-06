@@ -1,9 +1,9 @@
-import java.util.ArrayDeque;
+package livecodinginterview;
+
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 
-public class CodingInterviewTask16 {
+public class CodingInterviewTask8_TwoSum {
 
     /*
      * Problem: Two Sum
@@ -20,17 +20,35 @@ public class CodingInterviewTask16 {
      * Example 3: nums=[3, 3], target=6 → [0, 1] (3+3=6)
      */
     public static void main(String[] args) {
-        // Test 1
-        System.out.println(Arrays.toString(solution2(new int[]{2, 7, 11, 15}, 9)));
+        System.out.println(Arrays.toString(solution3(new int[]{2, 7, 11, 15}, 9)));
         // Expected: [0, 1]
 
-        // Test 2
-        System.out.println(Arrays.toString(solution2(new int[]{3, 2, 4}, 6)));
+        System.out.println(Arrays.toString(solution3(new int[]{3, 2, 4}, 6)));
         // Expected: [1, 2]
 
-        // Test 3
-        System.out.println(Arrays.toString(solution2(new int[]{3, 3}, 6)));
+        System.out.println(Arrays.toString(solution3(new int[]{3, 3}, 6)));
         // Expected: [0, 1]
+    }
+
+    public static int[] solution3(int[] nums, int target) {
+        var result = new int[2];
+        var map = new HashMap<Integer, Integer>();
+
+        for (var i = 0; i < nums.length; i++) {
+            var firstValue = nums[i];
+            var diff = target - firstValue;
+
+            if (map.containsKey(diff)) {
+                result[0] = map.get(diff);
+                result[1] = i;
+
+                return result;
+            }
+
+            map.put(firstValue, i);
+        }
+
+        return result;
     }
 
     public static int[] solution2(int[] nums, int target) {

@@ -1,9 +1,10 @@
+package onlineassessment;
+
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
-public class CodingInterviewTask7 {
+public class CodingInterviewTask7_HotelCheckInQueue {
 
     /*
      * Problem: Hotel Check-in Queue

@@ -1,3 +1,5 @@
+package onlineassessment;
+
 import java.util.*;
 
 public class EntryTask3 {

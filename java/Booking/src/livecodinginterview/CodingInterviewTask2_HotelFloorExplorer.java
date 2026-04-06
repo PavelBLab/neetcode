@@ -1,6 +1,8 @@
+package livecodinginterview;
+
 import java.util.*;
 
-public class CodingInterviewTask12 {
+public class CodingInterviewTask2_HotelFloorExplorer {
 
     /*
      * Problem: Hotel Floor Explorer

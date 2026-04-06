@@ -1,7 +1,9 @@
+package onlineassessment;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class CodingInterviewTask22 {
+public class CodingInterviewTask12_DeltaEncoding {
 
     /*
      * Problem: Delta Encoding
@@ -19,14 +21,30 @@ public class CodingInterviewTask22 {
      * Example 3: [10, 10, 10] → [10, 0, 0]
      */
     public static void main(String[] args) {
-        System.out.println(solution1(new int[]{100, 102, 105, 103, 110}));
+        System.out.println(solution2(new int[]{100, 102, 105, 103, 110}));
         // Expected: [100, 2, 3, -2, 7]
 
-        System.out.println(solution1(new int[]{50}));
+        System.out.println(solution2(new int[]{50}));
         // Expected: [50]
 
-        System.out.println(solution1(new int[]{10, 10, 10}));
+        System.out.println(solution2(new int[]{10, 10, 10}));
         // Expected: [10, 0, 0]
+    }
+
+    public static List<Integer> solution2(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return List.of();
+        }
+
+        var result = new ArrayList<Integer>();
+        result.add(nums[0]);
+
+        for (var i = 0; i < nums.length - 1; i++) {
+            var delta = nums[i + 1] - nums[i];
+            result.add(delta);
+        }
+
+        return result;
     }
 
     public static List<Integer> solution1(int[] nums) {

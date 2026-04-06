@@ -1,7 +1,8 @@
-import java.util.ArrayDeque;
-import java.util.Arrays;
+package livecodinginterview;
 
-public class CodingInterviewTask15 {
+import java.util.ArrayDeque;
+
+public class CodingInterviewTask4_BackspacingStrings {
 
     /*
      * Problem: Backspacing Strings
@@ -22,35 +23,62 @@ public class CodingInterviewTask15 {
      *   a, b, c, # (delete c), # (delete b), # (delete a) → ""
      */
     public static void main(String[] args) {
-        // Test 1: mixed backspaces
-        System.out.println(solution2("abc#def##"));
-        // Expected: "abd"
-
-        // Test 2: backspaces at start
-        System.out.println(solution2("##abc"));
-        // Expected: "abc"
-
-        // Test 3: all deleted
-        System.out.println(solution2("abc###"));
-        // Expected: ""
-
-        // Test 4: no backspaces
-        System.out.println(solution2("hello"));
-        // Expected: "hello"
-
-        // Test 5: empty string
-        System.out.println(solution2(""));
-        // Expected: ""
-
-        // Test 6: backspaces at start
-        System.out.println(solution2("#abc"));
-        // Expected: "abc"
+        System.out.println(solution4("abc#def##")); // Expected: "abd"
+        System.out.println(solution4("##abc"));      // Expected: "abc"
+        System.out.println(solution4("abc###"));     // Expected: ""
+        System.out.println(solution4("hello"));      // Expected: "hello"
+        System.out.println(solution4(""));           // Expected: ""
     }
+
+    public static String solution4(String input) {
+        var sb = new StringBuilder();
+        var stack = new ArrayDeque<Character>();
+
+        for (var c : input.toCharArray()) {
+            if (c == '#') {
+                if(!stack.isEmpty()) {
+                    stack.pop();
+                }
+            } else {
+                stack.push(c);
+            }
+        }
+
+        while (!stack.isEmpty()) {
+            var layerSize = stack.size();
+            var arr = new char[layerSize];
+
+            for (var i = layerSize - 1; i >=0; i--) {
+                arr[i] = stack.pop();
+            }
+
+            sb.append(arr);
+        }
+
+        return new String(sb);
+    }
+
+    public static String solution3(String input) {
+        var sb = new StringBuilder();
+
+        for (var c : input.toCharArray()) {
+            if (c == '#') {
+                if (!sb.isEmpty()) {
+                    sb.deleteCharAt(sb.length() - 1);
+                }
+            } else {
+                sb.append(c);
+            }
+        }
+
+        return new String(sb);
+    }
+
 
     public static String solution2(String input) {
         var sb = new StringBuilder();
 
-        for(var c : input.toCharArray()) {
+        for (var c : input.toCharArray()) {
             if (c == '#') {
                 if (!sb.isEmpty()) {
                     sb.deleteCharAt(sb.length() - 1);

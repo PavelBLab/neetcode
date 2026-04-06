@@ -1,7 +1,6 @@
-import java.util.ArrayList;
-import java.util.List;
+package onlineassessment;
 
-public class CodingInterviewTask23 {
+public class CodingInterviewTask13_StringRotation {
 
     /*
      * Problem: String Rotation
@@ -29,20 +28,42 @@ public class CodingInterviewTask23 {
      *   Result: "cdab"
      */
     public static void main(String[] args) {
-//        System.out.println(solution1("abcdef", 2, 3));
+        System.out.println(solution1("abcdef", 2, 3));
         // Expected: "fabcde"
 
-//        System.out.println(solution1("hello", 0, 0));
+        System.out.println(solution1("hello", 0, 0));
         // Expected: "hello"
 
-//        System.out.println(solution1("abcd", 6, 0));
+        System.out.println(solution1("abcd", 6, 0));
         // Expected: "cdab"
 
-//        System.out.println(solution1("a", 5, 3));
+        System.out.println(solution1("a", 5, 3));
         // Expected: "a"
 
-        System.out.println(solution1("abcdef", 0, 2));
+        System.out.println(solution2("abcdef", 0, 2));
     }
+
+    public static String solution2(String str, int left, int right) {
+        var sb = new StringBuilder(str);
+
+        if (left > str.length()) {
+            left = left % str.length();
+        }
+
+        if (right > str.length()) {
+            right = right % str.length();
+        }
+
+        var leftRotation = sb.substring(0, left);
+        sb.append(leftRotation);
+        sb.delete(0, left);
+
+        var rightRotation = sb.substring(sb.length() - right, sb.length());
+        sb.delete(sb.length() - right, sb.length());
+
+        return rightRotation + sb;
+    }
+
 
     public static String solution1(String str, int left, int right) {
         var sb = new StringBuilder(str);

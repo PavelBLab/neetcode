@@ -1,6 +1,8 @@
+package onlineassessment;
+
 import java.util.*;
 
-public class CodingInterviewTask3 {
+public class CodingInterviewTask3_AwardTopKHotels {
 
     /*
      * Problem: Award Top K Hotels

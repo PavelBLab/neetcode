@@ -1,8 +1,10 @@
+package onlineassessment;
+
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CodingInterviewTask8 {
+public class CodingInterviewTask8_HotelCheckInByGroup {
 
     /*
      * Problem: Hotel Check-in by Group

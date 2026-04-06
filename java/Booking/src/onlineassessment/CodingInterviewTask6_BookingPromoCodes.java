@@ -1,6 +1,8 @@
+package onlineassessment;
+
 import java.util.*;
 
-public class CodingInterviewTask6 {
+public class CodingInterviewTask6_BookingPromoCodes {
 
     /*
      * Problem: Booking Promo Codes

@@ -1,6 +1,8 @@
+package onlineassessment;
+
 import java.util.*;
 
-public class CodingInterviewTask10 {
+public class CodingInterviewTask10_GuestVipPriority {
 
     /*
      * Problem: Guest VIP Priority

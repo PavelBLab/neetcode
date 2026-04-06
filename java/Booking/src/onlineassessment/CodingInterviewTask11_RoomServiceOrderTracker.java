@@ -1,6 +1,8 @@
+package onlineassessment;
+
 import java.util.*;
 
-public class CodingInterviewTask11 {
+public class CodingInterviewTask11_RoomServiceOrderTracker {
 
     /*
      * Problem: Room Service Order Tracker

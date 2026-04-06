@@ -1,6 +1,8 @@
+package onlineassessment;
+
 import java.util.*;
 
-public class CodingInterviewTask2 {
+public class CodingInterviewTask2_HotelRoomAvailability {
 
 
     /*
