@@ -1,6 +1,6 @@
 package onlineassessment;
 
-public class CodingInterviewTask16_MinimumBookingCost {
+public class CodingInterviewTask16_1_MinimumBookingCost {
 
     /*
      * Dynamic Programming (DP) Problem: Minimum Booking Cost
@@ -30,10 +30,37 @@ public class CodingInterviewTask16_MinimumBookingCost {
      *   Only option: 50
      */
     public static void main(String[] args) {
-        System.out.println(solution1(new int[]{30, 40, 20, 50}));  // Expected: 115
-        System.out.println(solution1(new int[]{10, 20}));           // Expected: 20
-        System.out.println(solution1(new int[]{50}));               // Expected: 50
+        System.out.println(solution2(new int[]{30, 40, 20, 50}));  // Expected: 115
+        System.out.println(solution2(new int[]{10, 20}));           // Expected: 20
+        System.out.println(solution2(new int[]{50}));               // Expected: 50
     }
+
+    public static int solution2(int[] prices) {
+        if (prices == null || prices.length == 0) {
+            throw new IllegalArgumentException("Prices cannot be null or empty");
+        }
+
+        var dpArr = new int[prices.length + 1];
+        dpArr[0] = 0;  // 0 nights = 0 cost
+
+        for (var i = 1; i <= prices.length; i++) {
+            // Single night
+            dpArr[i] = dpArr[i - 1] + prices[i - 1];
+
+            // 2-night bundle
+            if (i >= 2) {
+                dpArr[i] = Math.min(dpArr[i], dpArr[i - 2] + prices[i - 2] + prices[i - 1] - 10);
+            }
+
+            // 3-night bundle
+            if (i >= 3) {
+                dpArr[i] = Math.min(dpArr[i], dpArr[i - 3] + prices[i - 3] + prices[i - 2] + prices[i - 1] - 25);
+            }
+        }
+
+        return dpArr[prices.length];
+    }
+
 
     public static int solution1(int[] prices) {
         if (prices.length == 1) return prices[0];

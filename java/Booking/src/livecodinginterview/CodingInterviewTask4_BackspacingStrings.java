@@ -23,12 +23,29 @@ public class CodingInterviewTask4_BackspacingStrings {
      *   a, b, c, # (delete c), # (delete b), # (delete a) → ""
      */
     public static void main(String[] args) {
-        System.out.println(solution4("abc#def##")); // Expected: "abd"
-        System.out.println(solution4("##abc"));      // Expected: "abc"
-        System.out.println(solution4("abc###"));     // Expected: ""
-        System.out.println(solution4("hello"));      // Expected: "hello"
-        System.out.println(solution4(""));           // Expected: ""
+        System.out.println(solution5("abc#def##")); // Expected: "abd"
+        System.out.println(solution5("##abc"));      // Expected: "abc"
+        System.out.println(solution5("abc###"));     // Expected: ""
+        System.out.println(solution5("hello"));      // Expected: "hello"
+        System.out.println(solution5(""));           // Expected: ""
     }
+
+    public static String solution5(String input) {
+        var sb = new StringBuilder();
+
+        for (var c : input.toCharArray()) {
+            if (c == '#') {
+                if (!sb.isEmpty()) {
+                    sb.deleteCharAt(sb.length() - 1);
+                }
+            } else {
+                sb.append(c);
+            }
+        }
+
+        return new String(sb);
+    }
+
 
     public static String solution4(String input) {
         var sb = new StringBuilder();

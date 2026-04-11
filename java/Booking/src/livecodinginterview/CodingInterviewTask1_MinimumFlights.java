@@ -34,17 +34,71 @@ public class CodingInterviewTask1_MinimumFlights {
         );
 
         // Test 1: shortest route
-        System.out.println(solution5(connections, "Amsterdam", "Rome")); // Expected: 2
+        System.out.println(solution6(connections, "Amsterdam", "Rome")); // Expected: 2
 
         // Test 2: direct flight
-        System.out.println(solution5(connections, "Amsterdam", "London")); // Expected: 1
+        System.out.println(solution6(connections, "Amsterdam", "London")); // Expected: 1
 
         // Test 3: same city
-        System.out.println(solution5(connections, "Paris", "Paris")); // Expected: 0
+        System.out.println(solution6(connections, "Paris", "Paris")); // Expected: 0
 
         // Test 4: no route
-        System.out.println(solution5(connections, "Amsterdam", "Tokyo")); // Expected: -1
+        System.out.println(solution6(connections, "Amsterdam", "Tokyo")); // Expected: -1
+
+        System.out.println(solution6(connections, "Paris", "Amsterdam")); // Expected: -1
     }
+
+    public static int solution6(List<String[]> connections, String start, String end) {
+        if (connections == null || connections.isEmpty()) {
+            return -1;
+        }
+
+        if (start.equals(end)) {
+            return 0;
+        }
+
+        var graph = new HashMap<String, List<String>>();
+        var citiesQueue = new ArrayDeque<String>();
+        citiesQueue.add(start);
+
+        var visitedCities = new HashSet<String>();
+        visitedCities.add(start);
+
+        var flightsCounter = 0;
+
+        for (var connection : connections) {
+            if (connection.length != 2) {
+                continue;
+            }
+
+            graph.computeIfAbsent(connection[0], l -> new ArrayList<>()).add(connection[1]);
+            graph.computeIfAbsent(connection[1], l -> new ArrayList<>()).add(connection[0]);
+        }
+
+        while (!citiesQueue.isEmpty()) {
+            var layerSize = citiesQueue.size();
+
+            for (var i = 0; i < layerSize; i++) {
+                var currentCity = citiesQueue.poll();
+                var connectionFlights = graph.getOrDefault(currentCity, List.of());
+
+                if (end.equals(currentCity)) {
+                    return flightsCounter;
+                }
+
+                for (var city : connectionFlights) {
+                    if (visitedCities.add(city)) {
+                        citiesQueue.add(city);
+                    }
+                }
+            }
+            flightsCounter++;
+        }
+
+
+        return -1;
+    }
+
 
     public static int solution5(List<String[]> connections, String start, String end) {
         if (start.equals(end)) return 0;

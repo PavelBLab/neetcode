@@ -1,5 +1,7 @@
 package onlineassessment;
 
+import java.util.Arrays;
+
 public class CodingInterviewTask14_ClimbingStairs {
 
     /*
@@ -18,12 +20,72 @@ public class CodingInterviewTask14_ClimbingStairs {
      * This is the Fibonacci pattern!
      */
     public static void main(String[] args) {
-        System.out.println(solution1(1));  // Expected: 1
-        System.out.println(solution1(2));  // Expected: 2
-        System.out.println(solution1(3));  // Expected: 3
-        System.out.println(solution1(4));  // Expected: 5
-        System.out.println(solution1(5));  // Expected: 8
+        System.out.println(solution4(1));  // Expected: 1
+        System.out.println(solution4(2));  // Expected: 2
+        System.out.println(solution4(3));  // Expected: 3
+        System.out.println(solution4(4));  // Expected: 5
+        System.out.println(solution4(5));  // Expected: 8
     }
+
+    public static int solution4(int n) {
+        if (n == 0) {
+            throw new IllegalArgumentException("Value n cannot be equal to 0");
+        }
+
+        var firstStep = 1;
+        if (n == 1) return 1;
+
+        var nextStep = 2;
+
+        for (var i = 3; i <= n; i++) {
+            var temp = nextStep;
+            nextStep = firstStep + nextStep;
+            firstStep = temp;
+        }
+
+        return nextStep;
+    }
+
+
+
+
+    public static int solution3(int n) {
+        if (n <= 0) {
+            throw new IllegalArgumentException("Wrong n");
+        }
+
+        var dpArr = new int[n + 1];
+        dpArr[0] = 0;
+        dpArr[1] = 1;
+
+        if (n == 1) return 1;
+        if (n == 2) return 2;
+
+        dpArr[2] = 2;
+
+        for (var i = 3; i <= n; i++) {
+            dpArr[i] = dpArr[i -2] + dpArr[i - 1];
+        }
+
+        return dpArr[n];
+    }
+
+    public static int solution2(int n) {
+        var dpArr = new int[n + 1];
+        dpArr[0] = 0;
+        dpArr[1] = 1;
+
+        if (n <= 2) return n;
+
+        dpArr[2] = 2;
+
+        for (var i = 3; i <= n; i++) {
+            dpArr[i] = dpArr[i - 2] + dpArr[i - 1];
+        }
+
+        return dpArr[n];
+    }
+
 
     public static int solution1(int n) {
         var dpArr = new int[n + 1];

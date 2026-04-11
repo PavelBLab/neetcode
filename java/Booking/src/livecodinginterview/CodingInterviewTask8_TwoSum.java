@@ -20,15 +20,41 @@ public class CodingInterviewTask8_TwoSum {
      * Example 3: nums=[3, 3], target=6 → [0, 1] (3+3=6)
      */
     public static void main(String[] args) {
-        System.out.println(Arrays.toString(solution3(new int[]{2, 7, 11, 15}, 9)));
+        System.out.println(Arrays.toString(solution4(new int[]{2, 7, 11, 15}, 9)));
         // Expected: [0, 1]
 
-        System.out.println(Arrays.toString(solution3(new int[]{3, 2, 4}, 6)));
+        System.out.println(Arrays.toString(solution4(new int[]{3, 2, 4}, 6)));
         // Expected: [1, 2]
 
-        System.out.println(Arrays.toString(solution3(new int[]{3, 3}, 6)));
+        System.out.println(Arrays.toString(solution4(new int[]{3, 3}, 6)));
         // Expected: [0, 1]
     }
+
+    public static int[] solution4(int[] nums, int target) {
+        if (nums == null || nums.length == 0) {
+            throw new IllegalArgumentException("Nums is empty or null");
+        }
+
+        var result = new int[2];
+        var map = new HashMap<Integer, Integer>();
+
+        for (var i = 0; i < nums.length; i++) {
+            var firstValue = target - nums[i];
+
+            if (map.containsKey(firstValue)) {
+                result[0] = map.get(firstValue);
+                result[1] = i;
+
+                return result;
+            } else {
+                map.put(nums[i], i);
+            }
+
+        }
+
+        return null;
+    }
+
 
     public static int[] solution3(int[] nums, int target) {
         var result = new int[2];

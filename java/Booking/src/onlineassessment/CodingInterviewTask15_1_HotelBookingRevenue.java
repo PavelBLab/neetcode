@@ -1,6 +1,6 @@
 package onlineassessment;
 
-public class CodingInterviewTask15_HotelBookingRevenue {
+public class CodingInterviewTask15_1_HotelBookingRevenue {
 
     /*
      * Dynamic Programming (DP) Problem: Hotel Booking Revenue

@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class CodingInterviewTask11_BookingPaymentReport {
+public class CodingInterviewTask11_1_BookingPaymentReport {
 
     /*
      * Problem: Booking Payment Report

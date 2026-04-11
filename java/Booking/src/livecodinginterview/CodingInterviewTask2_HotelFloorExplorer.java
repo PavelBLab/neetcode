@@ -14,6 +14,8 @@ public class CodingInterviewTask2_HotelFloorExplorer {
      * return a list of lists showing which floors you can reach
      * at each step (layer by layer).
      *
+     * Connections are bidirectional.
+     *
      * Example:
      *   Floor 1 ←→ Floor 2
      *   Floor 1 ←→ Floor 3
@@ -39,11 +41,53 @@ public class CodingInterviewTask2_HotelFloorExplorer {
                 5, List.of(4)
         );
 
-        System.out.println(solution5(connections, 1));
+        System.out.println(solution6(connections, 1));
         // Expected: [[1], [2, 3], [4], [5]]
 
-        System.out.println(solution5(connections, 4));
+        System.out.println(solution6(connections, 4));
         // Expected: [[4], [2, 3, 5], [1]]
+    }
+
+    public static List<List<Integer>> solution6(Map<Integer, List<Integer>> connections, int start) {
+        if (connections == null || connections.isEmpty()) {
+            return List.of();
+        }
+
+        if (!connections.containsKey(start)) {
+            return List.of();
+        }
+
+        var result = new ArrayList<List<Integer>>();
+        result.add(List.of(start));
+
+        var floorsQueue = new ArrayDeque<Integer>();
+        floorsQueue.add(start);
+
+        var visitedFloors = new HashSet<Integer>();
+        visitedFloors.add(start);
+
+        while (!floorsQueue.isEmpty()) {
+            var layerSize = floorsQueue.size();
+            var layer = new ArrayList<Integer>();
+
+            for (var i = 0; i < layerSize; i++) {
+                var currentFloor = floorsQueue.poll();
+                var connectionFloors = connections.getOrDefault(currentFloor, List.of());
+
+                for (var floor : connectionFloors) {
+                    if (visitedFloors.add(floor)) {
+                        floorsQueue.add(floor);
+                        layer.add(floor);
+                    }
+                }
+            }
+
+            if (!layer.isEmpty()) {
+                result.add(layer);
+            }
+        }
+
+        return result;
     }
 
     public static List<List<Integer>> solution5(Map<Integer, List<Integer>> connections, int start) {

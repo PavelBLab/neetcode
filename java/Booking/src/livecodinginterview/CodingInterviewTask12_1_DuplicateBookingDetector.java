@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
-public class CodingInterviewTask12_DuplicateBookingDetector {
+public class CodingInterviewTask12_1_DuplicateBookingDetector {
 
     /*
      * Problem: Duplicate Booking Detector

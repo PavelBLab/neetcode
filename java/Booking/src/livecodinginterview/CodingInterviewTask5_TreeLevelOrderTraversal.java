@@ -39,17 +39,56 @@ public class CodingInterviewTask5_TreeLevelOrderTraversal {
         root.right.right = new TreeNode(7);
 
         // Test 1: normal tree
-        System.out.println(solution2(root));
+        System.out.println(solution3(root));
         // Expected: [[3], [9, 20], [15, 7]]
 
         // Test 2: single node
-        System.out.println(solution2(new TreeNode(1)));
+        System.out.println(solution3(new TreeNode(1)));
         // Expected: [[1]]
 
         // Test 3: null tree
-        System.out.println(solution2(null));
+        System.out.println(solution3(null));
         // Expected: []
     }
+
+    public static List<List<Integer>> solution3(TreeNode root) {
+        if (root == null) {
+            return List.of();
+        }
+
+        var result = new ArrayList<List<Integer>>();
+
+        var orderQueue = new ArrayDeque<TreeNode>();
+        orderQueue.add(root);
+
+        while (!orderQueue.isEmpty()) {
+            var layerSize = orderQueue.size();
+            var layer = new ArrayList<Integer>();
+
+            for (var i = 0; i < layerSize; i++) {
+                var node = orderQueue.poll();
+
+                if (node != null) {
+                    layer.add(node.val);
+                }
+
+                if (node != null && node.left != null) {
+                    orderQueue.add(node.left);
+                }
+
+                if (node != null && node.right != null) {
+                    orderQueue.add(node.right);
+                }
+            }
+
+            if (!layer.isEmpty()) {
+                result.add(layer);
+            }
+        }
+
+        return result;
+    }
+
 
     public static List<List<Integer>> solution2(TreeNode root) {
         if (root == null) {

@@ -53,6 +53,64 @@ public class CodingInterviewTask3_NearestHotelFinder {
         System.out.println(solution3(grid4, 0, 0)); // Expected: 0
     }
 
+    public static int solution4(int[][] grid, int startRow, int startCol) {
+        if (grid == null || grid.length == 0 || grid[0].length == 0) {
+            return -1;
+        }
+
+        if (startRow < 0 || startRow >= grid.length || startCol < 0 || startCol >= grid[startRow].length) {
+            return -1;
+        }
+
+        var startingPosition = new int[]{startRow, startCol};
+        var positionsQueue = new ArrayDeque<int[]>();
+        positionsQueue.add(startingPosition);
+
+        var visitedPositons = new boolean[grid.length][grid[0].length];
+        visitedPositons[startRow][startCol] = true;
+
+        var directions = new int[][]{
+                {-1, 0}, // up
+                {+1, 0}, // down
+                {0, -1}, // left
+                {0, +1}  // right
+        };
+
+        var stepCounter = 0;
+
+        while (!positionsQueue.isEmpty()) {
+            var layerSize = positionsQueue.size();
+
+            for (var i = 0; i < layerSize; i++) {
+                var currentPosition = positionsQueue.poll();
+
+                var currentRow = Objects.requireNonNull(currentPosition)[0];
+                var currentCol = Objects.requireNonNull(currentPosition)[1];
+
+                if (grid[currentRow][currentCol] == 2) {
+                    return stepCounter;
+                }
+
+                for (var direction : directions) {
+                    var nextRow = currentRow + direction[0];
+                    var nextCol = currentCol + direction[1];
+
+                    if (0 <= nextRow && nextRow < grid.length &&
+                            0 <= nextCol && nextCol < grid[0].length &&
+                            grid[nextRow][nextCol] != 1 && !visitedPositons[nextRow][nextCol]) {
+
+                        positionsQueue.add(new int[]{nextRow, nextCol});
+                        visitedPositons[nextRow][nextCol] = true;
+                    }
+                }
+            }
+            stepCounter++;
+        }
+
+        return -1;
+    }
+
+
     public static int solution3(int[][] grid, int startRow, int startCol) {
 
         var startPosition = new int[]{startRow, startCol};

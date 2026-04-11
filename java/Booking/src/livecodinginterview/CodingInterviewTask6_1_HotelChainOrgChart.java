@@ -4,7 +4,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CodingInterviewTask6_HotelChainOrgChart {
+public class CodingInterviewTask6_1_HotelChainOrgChart {
 
     /*
      * Problem: Hotel Chain Org Chart
@@ -40,17 +40,53 @@ public class CodingInterviewTask6_HotelChainOrgChart {
         root.right.right = new OrgNode("Head of Support");
 
         // Test 1: full org chart
-        System.out.println(solution2(root));
+        System.out.println(solution3(root));
         // Expected: [[CEO], [VP Operations, VP Technology], [Regional Manager, Head of Support]]
 
         // Test 2: single person company
-        System.out.println(solution2(new OrgNode("Founder")));
+        System.out.println(solution3(new OrgNode("Founder")));
         // Expected: [[Founder]]
 
         // Test 3: no company
-        System.out.println(solution2(null));
+        System.out.println(solution3(null));
         // Expected: []
     }
+
+    public static List<List<String>> solution3(OrgNode root) {
+        if (root == null) {
+            return List.of();
+        }
+
+        var result = new ArrayList<List<String>>();
+
+        var nodesQueue = new ArrayDeque<OrgNode>();
+        nodesQueue.add(root);
+
+        while (!nodesQueue.isEmpty()) {
+            var layerSize = nodesQueue.size();
+            var layer = new ArrayList<String>();
+
+            for (var i = 0; i < layerSize; i++) {
+                var currentNode = nodesQueue.poll();
+
+                if (currentNode != null) {
+                    layer.add(currentNode.title);
+                }
+
+                if (currentNode != null && currentNode.left != null) {
+                    nodesQueue.add(currentNode.left);
+                }
+
+                if (currentNode != null && currentNode.right != null) {
+                    nodesQueue.add(currentNode.right);
+                }
+            }
+            result.add(layer);
+        }
+
+        return result;
+    }
+
 
     public static List<List<String>> solution2(OrgNode root) {
         if (root == null) {
