@@ -38,20 +38,42 @@ public class CodingInterviewTask5_MissingReservations {
      *   (nothing missing)
      */
     public static void main(String[] args) {
-        System.out.println(solution4(
+        System.out.println(solution5(
                 List.of(1, 2, 3, 2, 4),
                 List.of(2, 1, 4)
         )); // Expected: [3, 2]
 
-        System.out.println(solution4(
+        System.out.println(solution5(
                 List.of(10, 20, 10, 10),
                 List.of(10, 10)
         )); // Expected: [20, 10]
 
-        System.out.println(solution4(
+        System.out.println(solution5(
                 List.of(5, 6, 7),
                 List.of(5, 6, 7)
         )); // Expected: []
+    }
+
+    public static List<Integer> solution5(List<Integer> primary, List<Integer> secondary) {
+        var result = new ArrayList<Integer>();
+        var secondaryMap = new HashMap<Integer, Integer>();
+
+        for (var secondaryReservation : secondary) {
+            secondaryMap.put(secondaryReservation, secondaryMap.getOrDefault(secondaryReservation, 0) + 1);
+        }
+
+        for (var reservation : primary) {
+            if (!secondaryMap.containsKey(reservation)) {
+                result.add(reservation);
+            } else {
+                if (secondaryMap.get(reservation) <= 0) {
+                    result.add(reservation);
+                }
+                secondaryMap.put(reservation, secondaryMap.get(reservation) - 1);
+            }
+        }
+
+        return result;
     }
 
     public static List<Integer> solution4(List<Integer> primary, List<Integer> secondary) {

@@ -34,14 +34,42 @@ public class CodingInterviewTask11_RoomServiceOrderTracker {
         );
         var items = List.of("Pizza", "Coffee", "Wine", "Towels");
 
-        System.out.println(solution4(orders, items));
+        System.out.println(solution5(orders, items));
         // Expected: [Floor 3: Pizza, Floor 3: Wine, Floor 1: Coffee, Floor 1: Towels]
 
-        System.out.println(solution4(
+        System.out.println(solution5(
                 List.of(new int[]{5, 0}),
                 List.of("Soda")
         ));
         // Expected: [Floor 5: Soda]
+    }
+
+    public static List<String> solution5(List<int[]> orders, List<String> items) {
+        var result = new ArrayList<String>();
+        var orderGraph = new HashMap<Integer, List<Integer>>();
+        var floorQueue = new ArrayDeque<Integer>();
+        var visitedFloor = new HashSet<Integer>();
+
+        for (var order : orders) {
+            var floor = order[0];
+            var orderIndex = order[1];
+
+            orderGraph.computeIfAbsent(floor, l -> new ArrayList<>()).add(orderIndex);
+            floorQueue.add(floor);
+        }
+
+        while (!floorQueue.isEmpty()) {
+            var currentFloor = floorQueue.poll();
+            var orderIndexes = orderGraph.getOrDefault(currentFloor, List.of());
+
+            if (visitedFloor.add(currentFloor)) {
+                for (var orderIndex : orderIndexes) {
+                    result.add(String.format("Floor %s: %s", currentFloor, items.get(orderIndex)));
+                }
+            }
+        }
+
+        return result;
     }
 
     public static List<String> solution4(List<int[]> orders, List<String> items) {

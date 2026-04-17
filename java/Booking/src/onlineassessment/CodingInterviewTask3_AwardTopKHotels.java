@@ -36,9 +36,56 @@ public class CodingInterviewTask3_AwardTopKHotels {
         );
 
         int k = 2;
-        System.out.println(solution3(positiveKeywords, negativeKeywords, hotelIds, reviews, k));
+        System.out.println(solution4(positiveKeywords, negativeKeywords, hotelIds, reviews, k));
         // Expected: [2, 1]
     }
+
+    public static List<Integer> solution4(String positiveKeywords, String negativeKeywords,
+                                          List<Integer> hotelIds, List<String> reviews, int k) {
+        var reviewScoreMap = new HashMap<Integer, Integer>();
+        var positiveKeywordsSet = new HashSet<>(List.of(positiveKeywords.split(" ")));
+        var negativeKeyWordsSet = new HashSet<>(List.of(negativeKeywords.split(" ")));
+
+        for (var i = 0; i < reviews.size(); i++) {
+            var hotelId = hotelIds.get(i);
+            var review = reviews.get(i);
+
+            reviewScoreMap.put(hotelId, reviewScoreMap.getOrDefault(hotelId, 0) + calculateScore(positiveKeywordsSet, negativeKeyWordsSet, review));
+        }
+
+        return reviewScoreMap.entrySet().stream()
+                .sorted(
+                        Comparator.comparingInt((Map.Entry<Integer, Integer> e) -> e.getValue())
+                                .reversed()
+                                .thenComparingInt(Map.Entry::getKey)
+                )
+                .limit(k)
+                .map(Map.Entry::getKey)
+                .toList();
+    }
+
+    private static Integer calculateScore(final Set<String> positiveKeywords,
+                                          final Set<String> negativeKeywords,
+                                          final String review) {
+        var scoreCount = 0;
+
+        for (var word : getFormatedArray(review)) {
+            if (positiveKeywords.contains(word)) {
+                scoreCount += 3;
+            }
+
+            if (negativeKeywords.contains(word)) {
+                scoreCount--;
+            }
+        }
+
+        return scoreCount;
+    }
+
+    private static String[] getFormatedArray(final String word) {
+        return word.toLowerCase().replaceAll("[^a-z0-9 ]", "").split(" ");
+    }
+
 
     public static List<Integer> solution3(String positiveKeywords, String negativeKeywords,
                                           List<Integer> hotelIds, List<String> reviews, int k) {
@@ -132,8 +179,8 @@ public class CodingInterviewTask3_AwardTopKHotels {
     }
 
     private static int calculateScore(final String[] formatedReviewArr,
-                                   final Set<String> positiveKeywordsSet,
-                                   final Set<String> negativeKeywordsSet) {
+                                      final Set<String> positiveKeywordsSet,
+                                      final Set<String> negativeKeywordsSet) {
         var score = 0;
 
         for (var word : formatedReviewArr) {
@@ -148,11 +195,6 @@ public class CodingInterviewTask3_AwardTopKHotels {
 
         return score;
     }
-
-
-
-
-
 
 
     public static List<Integer> solution1(String positiveKeywords, String negativeKeywords,
@@ -185,15 +227,15 @@ public class CodingInterviewTask3_AwardTopKHotels {
     }
 
     private static int calculateReviewScore(final String review,
-                               final Set<String> positiveKeywordsSet,
-                               final Set<String> negativeKeywordsSet) {
+                                            final Set<String> positiveKeywordsSet,
+                                            final Set<String> negativeKeywordsSet) {
         var score = 0;
 
         var formatReview = formatReview(review);
 
         for (var word : formatReview) {
             if (positiveKeywordsSet.contains(word)) {
-              score += 3;
+                score += 3;
             }
 
             if (negativeKeywordsSet.contains(word)) {

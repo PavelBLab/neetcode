@@ -18,20 +18,35 @@ public class CodingInterviewTask16_2_MinimumBookingCost {
      *   Minimum: 430
      */
     public static void main(String[] args) {
-        System.out.println(solution3(1, new int[]{100, 180, 250}));
+        System.out.println(solution4(1, new int[]{100, 180, 250}));
         // Expected: 100
 
-        System.out.println(solution3(2, new int[]{100, 180, 250}));
+        System.out.println(solution4(2, new int[]{100, 180, 250}));
         // Expected: 180
 
-        System.out.println(solution3(3, new int[]{100, 180, 250})); // 300, 280, 250
+        System.out.println(solution4(3, new int[]{100, 180, 250})); // 300, 280, 250
         // Expected: 250
 
-        System.out.println(solution3(4, new int[]{100, 180, 250}));
+        System.out.println(solution4(4, new int[]{100, 180, 250}));
         // Expected: 350
 
-        System.out.println(solution3(5, new int[]{100, 180, 250}));
+        System.out.println(solution4(5, new int[]{100, 180, 250}));
         // Expected: 430
+    }
+
+    public static int solution4(int n, int[] costs) {
+        var dpArr = new int[n + 1];
+
+        dpArr[0] = 0;
+
+        for (var i = 1; i <= n; i++) {
+            dpArr[i] = costs[0] + dpArr[i - 1];
+
+            if (i >= 2) dpArr[i] = Math.min(costs[1] + dpArr[i - 2], dpArr[i]);
+            if (i >= 3) dpArr[i] = Math.min(costs[2] + dpArr[i - 3], dpArr[i]);
+        }
+
+        return dpArr[n];
     }
 
     public static int solution3(int n, int[] costs) {

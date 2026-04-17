@@ -22,12 +22,28 @@ public class CodingInterviewTask7_HotelCheckInQueue {
      *   result = ["Checked in: Anna", "Checked in: Bob", "Checked in: Clara"]
      */
     public static void main(String[] args) {
-        System.out.println(solution3(List.of("Anna", "Bob", "Clara")));
+        System.out.println(solution4(List.of("Anna", "Bob", "Clara")));
         // Expected: [Checked in: Anna, Checked in: Bob, Checked in: Clara]
 
-        System.out.println(solution3(List.of()));
+        System.out.println(solution4(List.of()));
         // Expected: []
     }
+
+    public static List<String> solution4(List<String> guests) {
+        var q = new ArrayDeque<String>();
+        var result = new ArrayList<String>();
+
+        for (var guest : guests) {
+            q.add(guest);
+        }
+
+        while (!q.isEmpty()) {
+            result.add(String.format("Checked in: %s", q.poll()));
+        }
+
+        return result;
+    }
+
 
     public static List<String> solution3(List<String> guests) {
         var result = new ArrayList<String>();

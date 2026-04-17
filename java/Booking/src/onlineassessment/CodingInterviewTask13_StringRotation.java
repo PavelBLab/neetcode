@@ -28,20 +28,47 @@ public class CodingInterviewTask13_StringRotation {
      *   Result: "cdab"
      */
     public static void main(String[] args) {
-        System.out.println(solution1("abcdef", 2, 3));
+        System.out.println(solution3("abcdef", 2, 3));
         // Expected: "fabcde"
 
-        System.out.println(solution1("hello", 0, 0));
+        System.out.println(solution3("hello", 0, 0));
         // Expected: "hello"
 
-        System.out.println(solution1("abcd", 6, 0));
+        System.out.println(solution3("abcd", 6, 0));
         // Expected: "cdab"
 
-        System.out.println(solution1("a", 5, 3));
+        System.out.println(solution3("a", 5, 3));
         // Expected: "a"
 
-        System.out.println(solution2("abcdef", 0, 2));
+        System.out.println(solution3("abcdef", 0, 2));
+        // Expected: "efabcd"
     }
+
+    public static String solution3(String str, int left, int right) {
+        if (str.length() == 1) {
+            return str;
+        }
+
+        var sb = new StringBuilder(str);
+
+        if (left > str.length()) {
+            left = left % str.length();
+        }
+
+        if (right > str.length()) {
+            right = right % str.length();
+        }
+
+        var leftRotation = sb.substring(0, left);
+        sb.append(leftRotation);
+        sb.delete(0, left);
+
+        var rightRotation = sb.substring(sb.length() - right);
+        sb.delete(sb.length() - right, sb.length());
+
+        return rightRotation + new String(sb);
+    }
+
 
     public static String solution2(String str, int left, int right) {
         var sb = new StringBuilder(str);

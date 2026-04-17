@@ -21,14 +21,25 @@ public class CodingInterviewTask12_DeltaEncoding {
      * Example 3: [10, 10, 10] → [10, 0, 0]
      */
     public static void main(String[] args) {
-        System.out.println(solution2(new int[]{100, 102, 105, 103, 110}));
+        System.out.println(solution3(new int[]{100, 102, 105, 103, 110}));
         // Expected: [100, 2, 3, -2, 7]
 
-        System.out.println(solution2(new int[]{50}));
+        System.out.println(solution3(new int[]{50}));
         // Expected: [50]
 
-        System.out.println(solution2(new int[]{10, 10, 10}));
+        System.out.println(solution3(new int[]{10, 10, 10}));
         // Expected: [10, 0, 0]
+    }
+
+    public static List<Integer> solution3(int[] nums) {
+        var result = new ArrayList<Integer>();
+        result.add(nums[0]);
+
+        for (var i = 0; i < nums.length - 1; i++) {
+            result.add(nums[i + 1] - nums[i]);
+        }
+
+        return result;
     }
 
     public static List<Integer> solution2(int[] nums) {

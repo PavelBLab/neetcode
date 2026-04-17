@@ -20,11 +20,29 @@ public class CodingInterviewTask14_ClimbingStairs {
      * This is the Fibonacci pattern!
      */
     public static void main(String[] args) {
-        System.out.println(solution4(1));  // Expected: 1
-        System.out.println(solution4(2));  // Expected: 2
-        System.out.println(solution4(3));  // Expected: 3
-        System.out.println(solution4(4));  // Expected: 5
-        System.out.println(solution4(5));  // Expected: 8
+        System.out.println(solution5(1));  // Expected: 1
+        System.out.println(solution5(2));  // Expected: 2
+        System.out.println(solution5(3));  // Expected: 3
+        System.out.println(solution5(4));  // Expected: 5
+        System.out.println(solution5(5));  // Expected: 8
+    }
+
+    public static int solution5(int n) {
+        var dpArr = new int[n + 1];
+        dpArr[0] = 0;
+        dpArr[1] = 1;
+
+        if (n == 1) {
+            return 1;
+        }
+
+        dpArr[2] = 2;
+
+        for (var i = 3; i <= n; i++) {
+            dpArr[i] = dpArr[i - 2] + dpArr[i - 1];
+        }
+
+        return dpArr[n];
     }
 
     public static int solution4(int n) {

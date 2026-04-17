@@ -27,12 +27,38 @@ public class CodingInterviewTask9_ReachableFloors {
                 9, List.of()     // floor 9 is isolated
         );
 
-        System.out.println(solution4(connections, 1));
+        System.out.println(solution5(connections, 1));
         // Expected: [1, 2, 3, 4, 5] (order may vary)
 
-        System.out.println(solution4(connections, 9));
+        System.out.println(solution5(connections, 9));
         // Expected: [9]
     }
+
+    public static List<Integer> solution5(Map<Integer, List<Integer>> connections, int start) {
+        var result = new ArrayList<Integer>();
+        result.add(start);
+
+        var floorsQueue = new ArrayDeque<Integer>();
+        floorsQueue.add(start);
+
+        var visitedFloors = new HashSet<Integer>();
+        visitedFloors.add(start);
+
+        while (!floorsQueue.isEmpty()) {
+            var currentFloor = floorsQueue.poll();
+            var neighbours = connections.get(currentFloor);
+
+            for (var neighbour : neighbours) {
+                if (visitedFloors.add(neighbour)) {
+                    floorsQueue.add(neighbour);
+                    result.add(neighbour);
+                }
+            }
+        }
+
+        return result;
+    }
+
 
     public static List<Integer> solution4(Map<Integer, List<Integer>> connections, int start) {
         var result = new ArrayList<Integer>();

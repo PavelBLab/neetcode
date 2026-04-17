@@ -29,17 +29,51 @@ public class CodingInterviewTask2_HotelRoomAvailability {
      */
     public static void main(String[] args) {
         // Test 1: should be false (guest 2 and 3 overlap, need 2 rooms)
-        System.out.println(solution4(1, new int[]{1, 3, 5}, new int[]{2, 6, 8}));
+        System.out.println(solution5(1, new int[]{1, 3, 5}, new int[]{2, 6, 8}));
 
         // Test 2: should be true (at most 1 guest at a time, 2 rooms is enough)
-        System.out.println(solution4(2, new int[]{1, 2, 3}, new int[]{2, 3, 4}));
+        System.out.println(solution5(2, new int[]{1, 2, 3}, new int[]{2, 3, 4}));
 
         // Test 3: should be false (guest 1 stays days 1,2 and guest 2 arrives day 2)
-        System.out.println(solution4(1, new int[]{1, 2}, new int[]{3, 4}));
+        System.out.println(solution5(1, new int[]{1, 2}, new int[]{3, 4}));
 
         // Test 4: should be true (back-to-back bookings, no overlap)
-        System.out.println(solution4(1, new int[]{1, 3, 5}, new int[]{3, 5, 7}));
+        System.out.println(solution5(1, new int[]{1, 3, 5}, new int[]{3, 5, 7}));
     }
+
+
+
+    public static boolean solution5(int k, int[] arrivals, int[] departures) {
+        var arrivalPointer = 0;
+        var departurePointer = 0;
+        var occupiedRoom = 0;
+
+        Arrays.sort(arrivals);
+        Arrays.sort(departures);
+
+        while (arrivalPointer < arrivals.length) {
+
+
+            var x = arrivals[arrivalPointer];
+            var y = departures[departurePointer];
+
+            if (arrivals[arrivalPointer] < departures[departurePointer]) {
+                arrivalPointer++;
+                occupiedRoom++;
+            } else {
+                departurePointer++;
+                occupiedRoom--;
+            }
+
+
+            if (occupiedRoom > k) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
 
     public static boolean solution4(int k, int[] arrivals, int[] departures) {
         if (arrivals.length != departures.length) {

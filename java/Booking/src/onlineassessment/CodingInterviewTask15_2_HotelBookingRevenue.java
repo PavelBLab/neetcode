@@ -16,14 +16,30 @@ public class CodingInterviewTask15_2_HotelBookingRevenue {
      * Best: 200 + 300 + 400 = 900 (skip indices 1 and 3)
      */
     public static void main(String[] args) {
-        System.out.println(solution3(new int[]{200, 150, 300, 100, 400}));
+        System.out.println(solution4(new int[]{200, 150, 300, 100, 400}));
         // Expected: 900
 
-        System.out.println(solution3(new int[]{100, 200, 300}));
+        System.out.println(solution4(new int[]{100, 200, 300}));
         // Expected: 400 (100 + 300)
 
-        System.out.println(solution3(new int[]{500}));
+        System.out.println(solution4(new int[]{500}));
         // Expected: 500
+    }
+
+    public static int solution4(int[] bookings) {
+        var dpArr = new int[bookings.length];
+
+        if (bookings.length == 1) return bookings[0];
+        if (bookings.length == 2) return Math.max(bookings[0], bookings[1]);
+
+        dpArr[0] = bookings[0];
+        dpArr[1] = Math.max(bookings[0], bookings[1]);
+
+        for (var i = 2; i < bookings.length; i++) {
+            dpArr[i] = Math.max(bookings[i] + dpArr[i - 2], dpArr[i - 1]);
+        }
+
+        return dpArr[bookings.length - 1];
     }
 
     public static int solution3(int[] bookings) {

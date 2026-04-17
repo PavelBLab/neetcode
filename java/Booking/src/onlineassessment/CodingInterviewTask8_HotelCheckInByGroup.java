@@ -34,8 +34,34 @@ public class CodingInterviewTask8_HotelCheckInByGroup {
                 List.of("Dan", "Eve", "Frank")
         );
 
-        System.out.println(solution4(groups));
+        System.out.println(solution5(groups));
     }
+
+    public static List<String> solution5(List<List<String>> groups) {
+        var result = new ArrayList<String>();
+        var guestQueue = new ArrayDeque<String>();
+        var numberOfPeoplePerGroup = new ArrayList<Integer>();
+
+        for (var group : groups) {
+            numberOfPeoplePerGroup.add(group.size());
+
+          for (var guest : group) {
+              guestQueue.add(guest);
+          }
+        }
+
+        while (!guestQueue.isEmpty()) {
+            for (var i = 0; i < numberOfPeoplePerGroup.size(); i++) {
+                var group = numberOfPeoplePerGroup.get(i);
+                for (var j = 0; j < group; j++) {
+                    var guest = guestQueue.poll();
+                    result.add(String.format("%s - group %s", guest, i + 1));
+                }
+            }
+        }
+        return result;
+    }
+
 
     public static List<String> solution4(List<List<String>> groups) {
         var result = new ArrayList<String>();
