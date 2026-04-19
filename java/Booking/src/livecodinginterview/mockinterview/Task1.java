@@ -1,4 +1,4 @@
-package onlineassessment.mockinterview;
+package livecodinginterview.mockinterview;
 
 import java.util.*;
 import java.util.stream.Collectors;

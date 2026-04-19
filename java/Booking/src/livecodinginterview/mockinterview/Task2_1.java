@@ -1,9 +1,8 @@
 package livecodinginterview.mockinterview;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
-public class Task2 {
+public class Task2_1 {
 
     /*
      * Booking.com tracks flight connections between cities. Given a list of direct flight routes as [from, to, price],

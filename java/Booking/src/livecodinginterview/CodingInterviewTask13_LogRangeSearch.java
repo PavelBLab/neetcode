@@ -15,6 +15,10 @@ public class CodingInterviewTask13_LogRangeSearch {
      * startTime and endTime (inclusive).
      *
      * Think about: what algorithm is best for searching sorted data?
+     *
+     * Follow up:
+     * Given a sorted list of logs, find all logs between startTime and endTime (inclusive) that
+     * match any of the given log levels. Return results grouped by level as a Map<String, List<String[]>>
      */
     public static void main(String[] args) {
         var logs = List.of(
@@ -29,10 +33,73 @@ public class CodingInterviewTask13_LogRangeSearch {
                 new String[]{"1400", "INFO", "Cache cleared"}
         );
 
-        System.out.println(searchLogs3(logs, 1100, 1300, Set.of("INFO","ERROR")));
+        System.out.println(searchLogs4(logs, 1100, 1300, Set.of("INFO", "ERROR")));
         // Expected:
         // ERROR → [[1200, ERROR, Database timeout]]
         // INFO  → [[1100, INFO, Request received], [1250, INFO, Request completed],
+    }
+
+
+    public static Map<String, List<String[]>> searchLogs4(List<String[]> logs,
+                                             long startTime,
+                                             long endTime,
+                                             Set<String> levels) {
+        var list = logs.subList(binarySearchStartTimeSolution4(logs, startTime), binarySearchEndTimeSolution4(logs, endTime) + 1);
+
+        return list.stream()
+                .filter(e -> levels.contains(e[1]))
+                .collect(
+                        Collectors.groupingBy(e -> e[1]));
+    }
+
+    private static int binarySearchStartTimeSolution4(List<String[]> logs,
+                                                      long startTime) {
+        var hiPointer = logs.size() - 1;
+        var lowPointer = 0;
+
+        while (lowPointer <= hiPointer) {
+            var midPointer = (lowPointer + hiPointer) / 2;
+            long midTimeLong;
+
+            try {
+                midTimeLong = Long.parseLong(logs.get(midPointer)[0]);
+            } catch (NumberFormatException e) {
+                throw new NullPointerException("Wrong format, cannot parse to long");
+            }
+
+            if (startTime <= midTimeLong) {
+                hiPointer = midPointer - 1;
+            } else {
+                lowPointer = midPointer + 1;
+            }
+        }
+
+        return lowPointer;
+    }
+
+    private static int binarySearchEndTimeSolution4(List<String[]> logs,
+                                                    long endTime) {
+        var hiPointer = logs.size() - 1;
+        var lowPointer = 0;
+
+        while (lowPointer <= hiPointer) {
+            var midPointer = (lowPointer + hiPointer) / 2;
+            long midTimeLong;
+
+            try {
+                midTimeLong = Long.parseLong(logs.get(midPointer)[0]);
+            } catch (NumberFormatException e) {
+                throw new NullPointerException("Wrong format, cannot parse to long");
+            }
+
+            if (endTime < midTimeLong) {
+                hiPointer = midPointer - 1;
+            } else {
+                lowPointer = midPointer + 1;
+            }
+        }
+
+        return hiPointer;
     }
 
 
@@ -106,9 +173,6 @@ public class CodingInterviewTask13_LogRangeSearch {
         }
         return lowPointer;
     }
-
-
-
 
 
     // More efficient O(log n) binary search

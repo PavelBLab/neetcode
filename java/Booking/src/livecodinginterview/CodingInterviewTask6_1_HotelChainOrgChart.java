@@ -40,16 +40,44 @@ public class CodingInterviewTask6_1_HotelChainOrgChart {
         root.right.right = new OrgNode("Head of Support");
 
         // Test 1: full org chart
-        System.out.println(solution3(root));
+        System.out.println(solution4(root));
         // Expected: [[CEO], [VP Operations, VP Technology], [Regional Manager, Head of Support]]
 
         // Test 2: single person company
-        System.out.println(solution3(new OrgNode("Founder")));
+        System.out.println(solution4(new OrgNode("Founder")));
         // Expected: [[Founder]]
 
         // Test 3: no company
-        System.out.println(solution3(null));
+        System.out.println(solution4(null));
         // Expected: []
+    }
+
+    public static List<List<String>> solution4(OrgNode root) {
+        if (root == null) {
+            return List.of();
+        }
+
+        var result = new ArrayList<List<String>>();
+
+        var orgNodeDeque = new ArrayDeque<OrgNode>();
+        orgNodeDeque.add(root);
+
+        while (!orgNodeDeque.isEmpty()) {
+            var layerSize = orgNodeDeque.size();
+            var layer = new ArrayList<String>();
+
+            for (var i = 0; i < layerSize; i++) {
+                var node = orgNodeDeque.poll();
+                var currentTitle = node.title;
+
+                layer.add(currentTitle);
+
+                if (node.left != null) orgNodeDeque.add(node.left);
+                if (node.right != null) orgNodeDeque.add(node.right);
+            }
+            result.add(layer);
+        }
+        return result;
     }
 
     public static List<List<String>> solution3(OrgNode root) {

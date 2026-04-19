@@ -21,11 +21,43 @@ public class CodingInterviewTask14_TripItinerary {
                 new String[]{"Paris", "London"}
         );
 
-        System.out.println(reconstructItinerary(tickets));
+        System.out.println(solution2(tickets));
         // Expected: [Paris, London, Amsterdam, Berlin, Prague]
     }
 
-    public static List<String> reconstructItinerary(List<String[]> tickets) {
+    public static List<String> solution2(List<String[]> tickets) {
+        var result = new ArrayList<String>();
+        var fromSet = new HashSet<String>();
+        var toSet = new HashSet<String>();
+        var map = new HashMap<String, String>();
+
+        for (var ticket : tickets) {
+            var from = ticket[0];
+            var to = ticket[1];
+
+            fromSet.add(from);
+            toSet.add(to);
+
+            map.put(from, to);
+        }
+
+        for (var city : fromSet) {
+            if (!toSet.contains(city)) {
+                result.add(city);
+            }
+        }
+
+        var currentCity = result.getFirst();
+        while (map.containsKey(currentCity)) {
+            var nextCity = map.get(currentCity);
+            result.add(nextCity);
+            currentCity = nextCity;
+        }
+
+        return result;
+    }
+
+    public static List<String> solution1(List<String[]> tickets) {
         if (tickets == null || tickets.isEmpty()) {
             return List.of();
         }

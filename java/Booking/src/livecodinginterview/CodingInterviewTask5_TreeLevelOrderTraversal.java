@@ -51,6 +51,37 @@ public class CodingInterviewTask5_TreeLevelOrderTraversal {
         // Expected: []
     }
 
+    public static List<List<Integer>> solution4(TreeNode root) {
+        var result = new ArrayList<List<Integer>>();
+
+        var treeNodeDeque = new ArrayDeque<TreeNode>();
+        treeNodeDeque.add(root);
+
+        while (!treeNodeDeque.isEmpty()) {
+            var layerSize = treeNodeDeque.size();
+            var layer = new ArrayList<Integer>();
+
+            for (var i = 0; i < layerSize; i++) {
+                var node = treeNodeDeque.poll();
+                var currentLevel = node.val;
+
+                layer.add(currentLevel);
+
+                if (node.left != null) {
+                    treeNodeDeque.add(node.left);
+                }
+
+                if (node.right != null) {
+                    treeNodeDeque.add(node.right);
+                }
+            }
+            result.add(layer);
+        }
+
+        return result;
+    }
+
+
     public static List<List<Integer>> solution3(TreeNode root) {
         if (root == null) {
             return List.of();

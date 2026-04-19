@@ -16,14 +16,69 @@ public class CodingInterviewTask15_1_MinimumKnightMoves {
      * Return -1 if target is unreachable.
      */
     public static void main(String[] args) {
-        System.out.println(solution1(0, 0, 1, 2));
+        System.out.println(solution2(0, 0, 1, 2));
         // Expected: 1 (direct L-move)
 
-        System.out.println(solution1(0, 0, 4, 4));
-        // Expected: 2 (0,0 → 2,1 → 4,2... or other 2-move paths)
+        System.out.println(solution2(0, 0, 4, 4));
+        // Expected: 4 (0,0 → 2,1 → 4,2... or other 4-move paths)
 
-        System.out.println(solution1(0, 0, 7, 7));
+        System.out.println(solution2(0, 0, 7, 7));
         // Expected: 6
+    }
+
+    public static int solution2(int startRow, int startCol, int targetRow, int targetCol) {
+        var board = new int[8][8];
+
+        var positionsQueue = new ArrayDeque<int[]>();
+        positionsQueue.add(new int[]{startRow, startCol});
+
+        var visitedPositions = new boolean[8][8];
+        visitedPositions[startRow][startCol] = true;
+
+        var directions = new int[][] {
+                {+2, +1},
+                {+2, -1},
+                {-2, +1},
+                {-2, -1},
+                {+1, +2},
+                {+1, -2},
+                {-1, +2},
+                {-1, -2}
+        };
+
+        var minimumNumberOfMoves = 0;
+
+        while (!positionsQueue.isEmpty()){
+            var layerSize = positionsQueue.size();
+
+            for (var i = 0; i < layerSize; i++) {
+                var currentPosition = positionsQueue.poll();
+
+                if (currentPosition == null) {
+                    continue;
+                }
+
+                if (currentPosition[0] == targetRow && currentPosition[1] == targetCol) {
+                    return minimumNumberOfMoves;
+                }
+
+                for (var direction : directions) {
+                    var nextRow = direction[0] + currentPosition[0];
+                    var nextCol = direction[1] + currentPosition[1];
+
+                    if (nextRow >= 0 && nextRow < board.length &&
+                        nextCol >= 0 && nextCol < board[0].length &&
+                        !visitedPositions[nextRow][nextCol]) {
+                        positionsQueue.add(new int[]{nextRow, nextCol});
+                        visitedPositions[nextRow][nextCol] = true;
+                    }
+
+                }
+            }
+            minimumNumberOfMoves++;
+        }
+
+        return -1;
     }
 
     public static int solution1(int startRow, int startCol, int targetRow, int targetCol) {

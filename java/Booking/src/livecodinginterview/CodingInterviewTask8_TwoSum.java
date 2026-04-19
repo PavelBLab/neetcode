@@ -20,14 +20,33 @@ public class CodingInterviewTask8_TwoSum {
      * Example 3: nums=[3, 3], target=6 → [0, 1] (3+3=6)
      */
     public static void main(String[] args) {
-        System.out.println(Arrays.toString(solution4(new int[]{2, 7, 11, 15}, 9)));
+        System.out.println(Arrays.toString(solution5(new int[]{2, 7, 11, 15}, 9)));
         // Expected: [0, 1]
 
-        System.out.println(Arrays.toString(solution4(new int[]{3, 2, 4}, 6)));
+        System.out.println(Arrays.toString(solution5(new int[]{3, 2, 4}, 6)));
         // Expected: [1, 2]
 
-        System.out.println(Arrays.toString(solution4(new int[]{3, 3}, 6)));
+        System.out.println(Arrays.toString(solution5(new int[]{3, 3}, 6)));
         // Expected: [0, 1]
+    }
+
+    public static int[] solution5(int[] nums, int target) {
+        var map = new HashMap<Integer, Integer>();
+
+        for (var i = 0; i < nums.length; i++) {
+            var diff = target - nums[i];
+
+            if (map.containsKey(diff)) {
+                var firstIndex = map.get(diff);
+                var secondIndex = i;
+
+                return new int[] {firstIndex, secondIndex};
+            }
+
+            map.put(nums[i], i);
+        }
+
+        return new int[] {};
     }
 
     public static int[] solution4(int[] nums, int target) {

@@ -41,12 +41,46 @@ public class CodingInterviewTask2_HotelFloorExplorer {
                 5, List.of(4)
         );
 
-        System.out.println(solution6(connections, 1));
+        System.out.println(solution7(connections, 1));
         // Expected: [[1], [2, 3], [4], [5]]
 
-        System.out.println(solution6(connections, 4));
+        System.out.println(solution7(connections, 4));
         // Expected: [[4], [2, 3, 5], [1]]
     }
+    public static List<List<Integer>> solution7(Map<Integer, List<Integer>> connections, int start) {
+        var result = new ArrayList<List<Integer>>();
+        result.add(List.of(start));
+
+        var floorsDeque = new ArrayDeque<Integer>();
+        floorsDeque.add(start);
+
+        var visitedFloors = new HashSet<Integer>();
+        visitedFloors.add(start);
+
+        while (!floorsDeque.isEmpty()) {
+            var layerSize = floorsDeque.size();
+            var layer = new ArrayList<Integer>();
+
+            for (var i = 0; i < layerSize; i++) {
+                var currentFloor = floorsDeque.poll();
+                var connectedFloors = connections.getOrDefault(currentFloor, List.of());
+
+                for (var floor : connectedFloors) {
+                    if (visitedFloors.add(floor)) {
+                        floorsDeque.add(floor);
+                        layer.add(floor);
+                    }
+                }
+            }
+
+            if (!layer.isEmpty()) {
+                result.add(layer);
+            }
+        }
+
+        return result;
+    }
+
 
     public static List<List<Integer>> solution6(Map<Integer, List<Integer>> connections, int start) {
         if (connections == null || connections.isEmpty()) {

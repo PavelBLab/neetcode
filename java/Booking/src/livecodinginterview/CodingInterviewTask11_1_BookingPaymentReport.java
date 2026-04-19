@@ -3,6 +3,7 @@ package livecodinginterview;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class CodingInterviewTask11_1_BookingPaymentReport {
 
@@ -18,7 +19,20 @@ public class CodingInterviewTask11_1_BookingPaymentReport {
      * hotelId → total revenue, sorted by revenue descending.
      *
      * The interviewer will add follow-ups after you solve this.
-     */
+     *
+     * Follow-up 1:
+     * The operations team now wants two things per hotel: total confirmed revenue AND the count of
+     * cancelled bookings. How would you modify your solution?
+     *
+     * Follow-up 2:
+     * This report will now run in a multi-threaded environment — multiple threads process different
+     * batches of logs concurrently and update the same map. How would you make your solution thread-safe?
+     *
+     * Find the top guest per hotel by spending" (HashMap inside Hotel)
+     * How would this scale to billions of logs?" (MapReduce discussion)
+     * What if two threads transfer revenue between hotels?" (deadlock prevention)
+     *
+     * */
     public static void main(String[] args) {
         var logs = List.of(
                 new String[]{"B001", "H1", "Anna", "200", "confirmed"},
@@ -31,13 +45,148 @@ public class CodingInterviewTask11_1_BookingPaymentReport {
                 new String[]{"B008", "H3", "Henry", "350", "confirmed"}
         );
 
-        System.out.println(solution1(logs));
+        System.out.println(solution3(logs));
         // Expected: {H3=750, H2=475, H1=350}
         // H3: 400+350=750, H2: 300+175=475, H1: 200+150=350
     }
 
+    public static Map<String, HotelSolution3> solution3(List<String[]> logs) {
+        if (logs == null || logs.isEmpty()) {
+            return Map.of();
+        }
 
-    public static Map<String, Hotel> solution1(List<String[]> logs) {
+        var hotelRevenueMap = new ConcurrentHashMap<String, HotelSolution3>();
+
+        for (var log : logs) {
+            if (log.length != 5) {
+                continue;
+            }
+
+            var hotelId = log[1];
+            int amount;
+
+            try {
+                amount = Integer.parseInt(log[3]);
+
+            } catch (NumberFormatException e) {
+                // can be logs and exception;
+                continue;
+            }
+
+            var status = log[4];
+
+            if (status.equals("confirmed")) {
+                final var finalAmount = amount;
+                hotelRevenueMap.compute(hotelId, (k, hotel) -> {
+                    if (hotel == null) {
+                        hotel = new HotelSolution3(hotelId);
+                    }
+                    hotel.increaseAmount(finalAmount);
+                    return hotel;
+                });
+            }
+
+            if (status.equals("cancelled")) {
+                hotelRevenueMap.compute(hotelId, (k, hotel) -> {
+                    if (hotel == null) {
+                        hotel = new HotelSolution3(hotelId);
+                    }
+
+                    hotel.increaseCancelledReservations();
+                    return hotel;
+                });
+            }
+        }
+
+        return hotelRevenueMap.entrySet().stream()
+                .sorted(
+                        Comparator.comparingInt((Map.Entry<String, HotelSolution3> e) -> e.getValue().getAmount())
+                                .reversed()
+                                .thenComparing(Map.Entry::getKey)
+                )
+                .collect(
+                        Collectors.toMap(
+                                Map.Entry::getKey,
+                                Map.Entry::getValue,
+                                (a, b) -> a, LinkedHashMap::new
+                        )
+                );
+    }
+
+    public static class HotelSolution3 {
+        private final String hotelId;
+        private int amount;
+        private int cancelledReservations;
+
+        public HotelSolution3(String hotelId) {
+            this.hotelId = hotelId;
+            this.amount = 0;
+            this.cancelledReservations = 0;
+        }
+
+        public String getHotelId() {
+            return this.hotelId;
+        }
+
+        public int getAmount() {
+            return this.amount;
+        }
+
+        public synchronized void increaseAmount(final int amount) {
+            this.amount += amount;
+        }
+
+        public int getCancelledReservations() {
+            return this.cancelledReservations;
+        }
+
+        public synchronized void increaseCancelledReservations() {
+            this.cancelledReservations++;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("Hotel: hotelId:%s, amount:%s, cancelled:%s", this.hotelId, this.amount, this.cancelledReservations);
+        }
+    }
+
+
+
+
+    public static Map<String, Integer> solution2(List<String[]> logs) {
+        var revenueMap = new HashMap<String, Integer>();
+
+        for (var log : logs) {
+            var bookingId = log[0];
+            var hotelId = log[1];
+            var guestName = log[2];
+            var amount = log[3];
+            var status = log[4];
+
+            if (status.equals("confirmed")) {
+                revenueMap.put(hotelId, revenueMap.getOrDefault(hotelId, 0) + Integer.parseInt(amount));
+            }
+
+        }
+
+        return revenueMap.entrySet().stream()
+                .sorted(
+                        Comparator.comparingInt((Map.Entry<String, Integer> e) -> e.getValue())
+                                .reversed()
+                                .thenComparing(Map.Entry::getKey)
+                )
+                .collect(
+                        Collectors.toMap(
+                                Map.Entry::getKey,
+                                Map.Entry::getValue,
+                                (k, v) -> k,
+                                LinkedHashMap::new
+                        )
+                );
+    }
+
+
+    public static Map<String, Hotel1> solution1(List<String[]> logs) {
         if (logs == null || logs.isEmpty()) {
             return Map.of();
         }
@@ -47,7 +196,7 @@ public class CodingInterviewTask11_1_BookingPaymentReport {
         // "For high contention I'd consider using ConcurrentHashMap.merge() which uses finer-grained locking per bucket
         // , or partition the logs so each thread works on different hotel IDs to avoid contention entirely."
         // Processing — ConcurrentHashMap.compute() is atomic per key
-        var hotelRevenueMap = new ConcurrentHashMap<String, Hotel>();
+        var hotelRevenueMap = new ConcurrentHashMap<String, Hotel1>();
 
         // Thread 1 hits H1 — compute locks the H1 bucket
         // Thread 2 hits H2 — compute locks the H2 bucket — runs in parallel
@@ -75,7 +224,7 @@ public class CodingInterviewTask11_1_BookingPaymentReport {
 
                 hotelRevenueMap.compute(hotelId, (key, existing) -> {
                     if (existing == null) {
-                        existing = new Hotel(key, guestName, BigDecimal.ZERO, 0);
+                        existing = new Hotel1(key, guestName, BigDecimal.ZERO, 0);
                     }
                     if (status.equals("confirmed")) {
                         existing.setRevenue(amount);
@@ -90,12 +239,12 @@ public class CodingInterviewTask11_1_BookingPaymentReport {
 
         var sortedEntries = new ArrayList<>(hotelRevenueMap.entrySet());
         sortedEntries.sort(
-                Comparator.comparing((Map.Entry<String, Hotel> e) -> e.getValue().getRevenue()).reversed()
+                Comparator.comparing((Map.Entry<String, Hotel1> e) -> e.getValue().getRevenue()).reversed()
                         .thenComparingInt(e -> e.getValue().getCancelStatus())
                         .thenComparing(e -> e.getValue().getHotelId()) //.thenComparing(e -> e.getValue().getSomething(), Comparator.reverseOrder())
         );
 
-        var sortedMap = new LinkedHashMap<String, Hotel>();
+        var sortedMap = new LinkedHashMap<String, Hotel1>();
 
         for (var e : sortedEntries) {
             sortedMap.put(e.getKey(), e.getValue());
@@ -116,17 +265,17 @@ public class CodingInterviewTask11_1_BookingPaymentReport {
         return sortedMap;
     }
 
-    private static class Hotel {
+    private static class Hotel1 {
         private final String hotelId;
         private final String guestName;
         private BigDecimal revenue;
         private int cancelStatus;
 
 
-        public Hotel(final String hotelId,
-                     final String guestName,
-                     final BigDecimal revenue,
-                     final Integer cancelStatus) {
+        public Hotel1(final String hotelId,
+                      final String guestName,
+                      final BigDecimal revenue,
+                      final Integer cancelStatus) {
             this.hotelId = hotelId;
             this.guestName = guestName;
             this.revenue = revenue;

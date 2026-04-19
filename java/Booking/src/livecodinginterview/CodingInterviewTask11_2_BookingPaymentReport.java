@@ -31,6 +31,10 @@ public class CodingInterviewTask11_2_BookingPaymentReport {
         // Expected: {H3=750, H2=475, H1=350}
     }
 
+
+
+
+
     public static Map<String, Integer> solution1(List<String[]> logs) {
         if (logs == null || logs.isEmpty()) {
             return Map.of();

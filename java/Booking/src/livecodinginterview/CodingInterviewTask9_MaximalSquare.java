@@ -27,7 +27,7 @@ public class CodingInterviewTask9_MaximalSquare {
      */
     public static void main(String[] args) {
         // Test 1
-        System.out.println(solution1(new int[][]{
+        System.out.println(solution3(new int[][]{
                 {1, 0, 1, 0, 0},
                 {1, 0, 1, 1, 1},
                 {1, 1, 1, 1, 1},
@@ -36,21 +36,21 @@ public class CodingInterviewTask9_MaximalSquare {
         // Expected: 4
 
         // Test 2
-        System.out.println(solution1(new int[][]{
+        System.out.println(solution3(new int[][]{
                 {0, 1},
                 {1, 0}
         }));
         // Expected: 1
 
         // Test 3
-        System.out.println(solution1(new int[][]{
+        System.out.println(solution3(new int[][]{
                 {0, 0},
                 {0, 0}
         }));
         // Expected: 0
 
         // Test 4: all 1s
-        System.out.println(solution1(new int[][]{
+        System.out.println(solution3(new int[][]{
                 {1, 1, 1},
                 {1, 1, 1},
                 {1, 1, 1}
@@ -58,8 +58,68 @@ public class CodingInterviewTask9_MaximalSquare {
         // Expected: 9
     }
 
-    public static int solution1(int[][] grid) {
 
+    public static int solution3(int[][] grid) {
+        var rows = grid.length;
+        var cols = grid[0].length;
+
+        var dpGrid = new int[rows][cols];
+
+        var squareSide = 0;
+
+        for (var i = 0; i < rows; i++) {
+            for (var j = 0; j < cols; j++) {
+                if (grid[i][j] == 0) {
+                    dpGrid[i][j] = 0;
+                } else if (i == 0 || j == 0) {
+                    dpGrid[i][j] = 1;
+                } else {
+                    dpGrid[i][j] = Math.min(Math.min(dpGrid[i - 1][j], dpGrid[i][j - 1]), dpGrid[i - 1][j - 1]) + 1;
+                }
+
+                squareSide = Math.max(squareSide, dpGrid[i][j]);
+            }
+        }
+
+        return squareSide * squareSide;
+    }
+
+
+
+
+
+
+    public static int solution2(int[][] grid) {
+        if (grid == null || grid.length == 0) {
+            return 0;
+        }
+
+        var rows = grid.length;
+        var cols = grid[0].length;
+        var dpGrid = new int[rows][cols];
+
+        var squareSide = 0;
+
+        for (var i = 0; i < rows; i++) {
+            for (var j = 0; j < cols; j++) {
+                if (grid[i][j] == 0) {
+                    dpGrid[i][j] = 0;
+                } else if (i == 0 || j == 0) {
+                    dpGrid[i][j] = 1;
+                } else {
+                    dpGrid[i][j] = Math.min(Math.min(dpGrid[i - 1][j], dpGrid[i][j - 1]), dpGrid[i - 1][j - 1]) + 1;
+                }
+
+                squareSide = Math.max(squareSide, dpGrid[i][j]);
+            }
+        }
+
+        return squareSide * squareSide;
+    }
+
+
+
+    public static int solution1(int[][] grid) {
         if (grid == null || grid.length == 0) {
             return 0;
         }
@@ -73,7 +133,7 @@ public class CodingInterviewTask9_MaximalSquare {
             for (int j = 0; j < cols; j++) {
                 if (grid[i][j] == 0) {
                     dp[i][j] = 0;
-                } else if (i == 0 || j == 0) {
+                } else if (i == 0 || j == 0) { // handles first row or first column
                     // First row or first column — max possible is 1×1
                     dp[i][j] = 1;
                 } else {

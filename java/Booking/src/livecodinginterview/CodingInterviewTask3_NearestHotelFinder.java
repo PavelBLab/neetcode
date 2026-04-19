@@ -28,7 +28,7 @@ public class CodingInterviewTask3_NearestHotelFinder {
                 {0, 0, 0, 0},
                 {2, 1, 0, 0}
         };
-        System.out.println(solution3(grid1, 2, 0)); // Expected: 1
+        System.out.println(solution5(grid1, 2, 0)); // Expected: 1
 
         // Test 2: must navigate around walls
         int[][] grid2 = {
@@ -36,22 +36,69 @@ public class CodingInterviewTask3_NearestHotelFinder {
                 {0, 1, 0},
                 {0, 0, 0}
         };
-        System.out.println(solution3(grid2, 0, 0)); // Expected: 6
+        System.out.println(solution5(grid2, 0, 0)); // Expected: 6
 
         // Test 3: hotel unreachable
         int[][] grid3 = {
                 {0, 1},
                 {1, 2}
         };
-        System.out.println(solution3(grid3, 0, 0)); // Expected: -1
+        System.out.println(solution5(grid3, 0, 0)); // Expected: -1
 
         // Test 4: start on a hotel
         int[][] grid4 = {
                 {2, 0},
                 {0, 0}
         };
-        System.out.println(solution3(grid4, 0, 0)); // Expected: 0
+        System.out.println(solution5(grid4, 0, 0)); // Expected: 0
     }
+
+    public static int solution5(int[][] grid, int startRow, int startCol) {
+        var positionsQueue = new ArrayDeque<int[]>();
+        positionsQueue.add(new int[] {startRow, startCol});
+
+        var visitedPositions = new boolean[grid.length][grid[0].length];
+        visitedPositions[startRow][startCol] = true;
+
+        var directions = new int[][] {
+                {-1, 0},  // up
+                {+1, 0},  // down
+                {0, -1},  // left
+                {0, +1}   // right
+        };
+
+        var stepsCounter = 0;
+
+        while (!positionsQueue.isEmpty()) {
+            var layerSize = positionsQueue.size();
+
+            for (var i = 0; i < layerSize; i++) {
+                var currentPosition = positionsQueue.poll();
+                var row = currentPosition[0];
+                var col = currentPosition[1];
+
+                if (grid[row][col] == 2) {
+                    return stepsCounter;
+                }
+
+                for (var direction : directions) {
+                    var nextRow = direction[0] + row;
+                    var nextCol = direction[1] + col;
+
+                    if (nextRow >= 0 && nextRow < grid.length &&
+                        nextCol >= 0 && nextCol < grid[0].length &&
+                            !visitedPositions[nextRow][nextCol] && grid[nextRow][nextCol] != 1) {
+                        visitedPositions[nextRow][nextCol] = true;
+                        positionsQueue.add(new int[] {nextRow, nextCol});
+                    }
+                }
+            }
+            stepsCounter++;
+        }
+
+        return -1;
+    }
+
 
     public static int solution4(int[][] grid, int startRow, int startCol) {
         if (grid == null || grid.length == 0 || grid[0].length == 0) {
